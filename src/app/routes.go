@@ -19,7 +19,10 @@ func NewRouter(
 
 	// Rutas Cliente
 	api.HandleFunc("/clients", clientController.GetAllClients).Methods("GET")
-	api.HandleFunc("/clients", clientController.AddNewClient).Methods("POST")
+	api.HandleFunc("/clients/{clientID}", clientController.GetClientById).Methods("GET")
+	api.HandleFunc("/createClient", clientController.AddNewClient).Methods("POST")
+	api.HandleFunc("/updateClient/{clientID}", clientController.UpdateClient).Methods("PUT")
+	api.HandleFunc("/deleteClient/{clientID}", clientController.DeleteClient).Methods("DELETE")
 
 	return &Routes{
 		Router: r,
