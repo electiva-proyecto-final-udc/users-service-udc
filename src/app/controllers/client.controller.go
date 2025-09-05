@@ -147,7 +147,7 @@ func (cc *ClientController) UpdateClient(w http.ResponseWriter, r *http.Request)
 		request.PhoneNumber,
 		request.Address,
 	)
-	updatedClient.Person.ID = clientID
+	updatedClient.ID = clientID
 
 	err = cc.cs.UpdateClient(clientID, *updatedClient)
 	if err != nil {

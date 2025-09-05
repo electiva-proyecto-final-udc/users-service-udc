@@ -24,6 +24,12 @@ func NewRouter(
 	api.HandleFunc("/updateClient/{clientID}", clientController.UpdateClient).Methods("PUT")
 	api.HandleFunc("/deleteClient/{clientID}", clientController.DeleteClient).Methods("DELETE")
 
+	api.HandleFunc("/technician", clientController.GetAllClients).Methods("GET")
+	api.HandleFunc("/technician/{technicianID}", clientController.GetClientById).Methods("GET")
+	api.HandleFunc("/createTechnician", clientController.AddNewClient).Methods("POST")
+	api.HandleFunc("/updateTechnician/{technicianID}", clientController.UpdateClient).Methods("PUT")
+	api.HandleFunc("/deleteTechnician/{technicianID}", clientController.DeleteClient).Methods("DELETE")
+
 	return &Routes{
 		Router: r,
 	}

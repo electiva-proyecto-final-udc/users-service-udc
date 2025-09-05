@@ -30,13 +30,13 @@ func (cr *ClientRepository) GetAllClients() ([]models.GetClientRequest, error) {
 
 	for _, c := range cr.db {
 		clients = append(clients, models.GetClientRequest{
-			ID:           c.Person.ID,
-			DocumentType: c.Person.DocumentType,
-			Document:     c.Person.Document,
-			Name:         c.Person.Name,
-			Surname:      c.Person.Surname,
-			Email:        c.Person.Email,
-			PhoneNumber:  c.Person.PhoneNumber,
+			ID:           c.ID,
+			DocumentType: c.DocumentType,
+			Document:     c.Document,
+			Name:         c.Name,
+			Surname:      c.Surname,
+			Email:        c.Email,
+			PhoneNumber:  c.PhoneNumber,
 			Address:      c.Address,
 		})
 	}
@@ -46,15 +46,15 @@ func (cr *ClientRepository) GetAllClients() ([]models.GetClientRequest, error) {
 
 func (cr *ClientRepository) GetClientById(id uuid.UUID) (models.GetClientRequest, error) {
 	for _, c := range cr.db {
-		if c.Person.ID == id {
+		if c.ID == id {
 			client := models.GetClientRequest{
-				ID:           c.Person.ID,
-				DocumentType: c.Person.DocumentType,
-				Document:     c.Person.Document,
-				Name:         c.Person.Name,
-				Surname:      c.Person.Surname,
-				Email:        c.Person.Email,
-				PhoneNumber:  c.Person.PhoneNumber,
+				ID:           c.ID,
+				DocumentType: c.DocumentType,
+				Document:     c.Document,
+				Name:         c.Name,
+				Surname:      c.Surname,
+				Email:        c.Email,
+				PhoneNumber:  c.PhoneNumber,
 				Address:      c.Address}
 			return client, nil
 		}
@@ -65,14 +65,14 @@ func (cr *ClientRepository) GetClientById(id uuid.UUID) (models.GetClientRequest
 
 func (cr *ClientRepository) UpdateClient(id uuid.UUID, updated models.Client) error {
 	for i, c := range cr.db {
-		if c.Person.ID == id {
-			updated.Person.ID = id
-			cr.db[i].Person.DocumentType = updated.Person.DocumentType
-			cr.db[i].Person.Document     = updated.Person.Document
-			cr.db[i].Person.Name         = updated.Person.Name
-			cr.db[i].Person.Surname      = updated.Person.Surname
-			cr.db[i].Person.Email        = updated.Person.Email
-			cr.db[i].Person.PhoneNumber  = updated.Person.PhoneNumber
+		if c.ID == id {
+			updated.ID = id
+			cr.db[i].DocumentType = updated.DocumentType
+			cr.db[i].Document     = updated.Document
+			cr.db[i].Name         = updated.Name
+			cr.db[i].Surname      = updated.Surname
+			cr.db[i].Email        = updated.Email
+			cr.db[i].PhoneNumber  = updated.PhoneNumber
 			cr.db[i].Address = updated.Address
 			return nil
 		}
@@ -82,7 +82,7 @@ func (cr *ClientRepository) UpdateClient(id uuid.UUID, updated models.Client) er
 
 func (cr *ClientRepository) DeleteClient(id uuid.UUID) error {
 	for i, c := range cr.db {
-		if c.Person.ID == id {
+		if c.ID == id {
 			cr.db = append(cr.db[:i], cr.db[i+1:]...)
 			return nil
 		}
