@@ -36,12 +36,20 @@ func main() {
 	// Inyección de dependencias
 	app := fx.New(
 		fx.Provide(
-			
 			//Dependencias clientes
 			repository.NewClientRepository,
 			services.NewClientService,
 			controllers.NewClientController,
 
+			//Dependencias Técnicos
+			repository.NewTechnicianRepository,
+			services.NewTechnicianService,
+			controllers.NewTechnicianController,
+
+			// Dependencias auth
+			services.NewAuthService,
+			controllers.NewAuthController,
+			
 			app.NewRouter,
 		),
 		fx.Invoke(RunServer),
