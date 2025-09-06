@@ -43,7 +43,7 @@ func (cr *ClientRepository) GetClientById(id uuid.UUID) (models.GetClientRequest
 		}
 	}
 
-	return models.GetClientRequest{}, fmt.Errorf("client not found")
+	return models.GetClientRequest{}, nil
 }
 
 func (cr *ClientRepository) UpdateClient(id uuid.UUID, updated models.Client) error {

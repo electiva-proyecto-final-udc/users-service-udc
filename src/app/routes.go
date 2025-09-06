@@ -4,6 +4,7 @@ import (
 	"user-service-ucd/src/app/controllers"
 
 	"github.com/gorilla/mux"
+	"github.com/swaggo/http-swagger"
 )
 
 type Routes struct {
@@ -18,6 +19,8 @@ func NewRouter(
 
 	r := mux.NewRouter()
 	api := r.PathPrefix("/user-service/v1").Subrouter()
+
+	r.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
 	// Auth
 	api.HandleFunc("/auth/login", authController.Login).Methods("POST")

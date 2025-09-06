@@ -1,0 +1,1254 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Micro para gestión de usuarios, clientes y técnicos",
+        "title": "Microservicio de usuario UDC",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/user-service/v1",
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "description": "Retorna un token JWT si las credenciales son correctas",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Logearse como técnico o admin",
+                "parameters": [
+                    {
+                        "description": "Credenciales de login",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/common.AuthResult"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/changePassword": {
+            "patch": {
+                "description": "Cambia la contraseña de un técnico existente",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "technicians"
+                ],
+                "summary": "Cambiar contraseña",
+                "parameters": [
+                    {
+                        "description": "Datos para cambiar contraseña",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ChangePasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ejemplo: {\\\"message\\\":\\\"PASSWORD_CHANGED_SUCCESSFULLY\\\"}",
+                        "schema": {
+                            "$ref": "#/definitions/common.ApiResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/clients": {
+            "get": {
+                "description": "Obtiene la lista completa de clientes",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "clients"
+                ],
+                "summary": "Listar clientes",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.Client"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/clients/{clientID}": {
+            "get": {
+                "description": "Busca un cliente por su UUID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "clients"
+                ],
+                "summary": "Obtener cliente",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del cliente",
+                        "name": "clientID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.Client"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/createClient": {
+            "post": {
+                "description": "Crea un nuevo cliente en el sistema",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "clients"
+                ],
+                "summary": "Crear cliente",
+                "parameters": [
+                    {
+                        "description": "Datos del cliente",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateClientRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.Client"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/createTechnician": {
+            "post": {
+                "description": "Crea un nuevo técnico en el sistema",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "technicians"
+                ],
+                "summary": "Crear técnico",
+                "parameters": [
+                    {
+                        "description": "Datos del técnico",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateTechnicianRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.Technician"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/deleteClient/{clientID}": {
+            "delete": {
+                "description": "Elimina un cliente por su UUID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "clients"
+                ],
+                "summary": "Eliminar cliente",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del cliente",
+                        "name": "clientID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ejemplo: {\\\"message\\\":\\\"CLIENT_DELETED_SUCCESSFULLY\\\"}",
+                        "schema": {
+                            "$ref": "#/definitions/common.ApiResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/deleteTechnician/{technicianID}": {
+            "delete": {
+                "description": "Elimina un técnico por su ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "technicians"
+                ],
+                "summary": "Eliminar técnico",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del técnico",
+                        "name": "technicianID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ejemplo: {\\\"message\\\":\\\"TECHNICIAN_DELETED_SUCCESSFULLY\\\"}",
+                        "schema": {
+                            "$ref": "#/definitions/common.ApiResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/technician/{technicianID}": {
+            "get": {
+                "description": "Busca un técnico por su ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "technicians"
+                ],
+                "summary": "Obtener técnico",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del técnico",
+                        "name": "technicianID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.Technician"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/technicians": {
+            "get": {
+                "description": "Obtiene la lista completa de técnicos",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "technicians"
+                ],
+                "summary": "Listar técnicos",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.Technician"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/updateClient/{clientID}": {
+            "put": {
+                "description": "Actualiza los datos de un cliente existente",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "clients"
+                ],
+                "summary": "Actualizar cliente",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del cliente",
+                        "name": "clientID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Datos del cliente",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateClientRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.Client"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/updateTechnician/{technicianID}": {
+            "put": {
+                "description": "Actualiza los datos de un técnico existente",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "technicians"
+                ],
+                "summary": "Actualizar técnico",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del técnico",
+                        "name": "technicianID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Datos del técnico",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateTechnicianRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.Technician"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.ApiResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/common.ErrorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "common.ApiResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "error": {
+                    "$ref": "#/definitions/common.ErrorResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "common.AuthResult": {
+            "type": "object",
+            "properties": {
+                "role": {
+                    "description": "Rol del usuario autenticado",
+                    "type": "string",
+                    "example": "TECHNICIAN"
+                },
+                "token": {
+                    "description": "JWT generado",
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                }
+            }
+        },
+        "common.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "details": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ChangePasswordRequest": {
+            "type": "object",
+            "properties": {
+                "NewPassword": {
+                    "type": "string",
+                    "example": "newSecret123"
+                },
+                "Username": {
+                    "type": "string",
+                    "example": "carlos.r"
+                }
+            }
+        },
+        "models.Client": {
+            "type": "object",
+            "properties": {
+                "Address": {
+                    "type": "string",
+                    "example": "Calle 123 #45-67"
+                },
+                "Document": {
+                    "type": "string",
+                    "example": "1002003001"
+                },
+                "DocumentType": {
+                    "type": "string",
+                    "example": "CC"
+                },
+                "Email": {
+                    "type": "string",
+                    "example": "juan.perez@example.com"
+                },
+                "ID": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "Name": {
+                    "type": "string",
+                    "example": "Juan"
+                },
+                "PhoneNumber": {
+                    "type": "string",
+                    "example": "3001234567"
+                },
+                "Surname": {
+                    "type": "string",
+                    "example": "Pérez"
+                }
+            }
+        },
+        "models.CreateClientRequest": {
+            "type": "object",
+            "required": [
+                "Address",
+                "Document",
+                "DocumentType",
+                "Email",
+                "Name",
+                "PhoneNumber",
+                "Surname"
+            ],
+            "properties": {
+                "Address": {
+                    "type": "string",
+                    "example": "Calle 123 #45-67"
+                },
+                "Document": {
+                    "type": "string",
+                    "example": "1002003001"
+                },
+                "DocumentType": {
+                    "type": "string",
+                    "example": "CC"
+                },
+                "Email": {
+                    "type": "string",
+                    "example": "juan.perez@example.com"
+                },
+                "Name": {
+                    "type": "string",
+                    "example": "Juan"
+                },
+                "PhoneNumber": {
+                    "type": "string",
+                    "example": "3001234567"
+                },
+                "Surname": {
+                    "type": "string",
+                    "example": "Pérez"
+                }
+            }
+        },
+        "models.CreateTechnicianRequest": {
+            "type": "object",
+            "required": [
+                "Address",
+                "Document",
+                "DocumentType",
+                "Email",
+                "EntryDate",
+                "IsActive",
+                "Name",
+                "Password",
+                "PhoneNumber",
+                "Surname",
+                "Username"
+            ],
+            "properties": {
+                "Address": {
+                    "type": "string",
+                    "example": "Calle 123 #45-67"
+                },
+                "Document": {
+                    "type": "string",
+                    "example": "1234567890"
+                },
+                "DocumentType": {
+                    "type": "string",
+                    "example": "CC"
+                },
+                "Email": {
+                    "type": "string",
+                    "example": "carlos.ramirez@example.com"
+                },
+                "EntryDate": {
+                    "type": "string",
+                    "example": "2025-01-01T15:04:05Z"
+                },
+                "IsActive": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "Name": {
+                    "type": "string",
+                    "example": "Carlos"
+                },
+                "Password": {
+                    "type": "string",
+                    "example": "secret123"
+                },
+                "PhoneNumber": {
+                    "type": "string",
+                    "example": "3001234567"
+                },
+                "Surname": {
+                    "type": "string",
+                    "example": "Ramírez"
+                },
+                "Username": {
+                    "type": "string",
+                    "example": "carlos.r"
+                }
+            }
+        },
+        "models.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "Password": {
+                    "type": "string",
+                    "example": "secret123"
+                },
+                "Username": {
+                    "type": "string",
+                    "example": "carlos.r"
+                }
+            }
+        },
+        "models.Technician": {
+            "type": "object",
+            "properties": {
+                "Address": {
+                    "type": "string",
+                    "example": "Calle 123 #45-67"
+                },
+                "Document": {
+                    "type": "string",
+                    "example": "1234567890"
+                },
+                "DocumentType": {
+                    "type": "string",
+                    "example": "CC"
+                },
+                "Email": {
+                    "type": "string",
+                    "example": "carlos.ramirez@example.com"
+                },
+                "EntryDate": {
+                    "type": "string",
+                    "example": "2025-01-01T15:04:05Z"
+                },
+                "ID": {
+                    "type": "string",
+                    "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                },
+                "IsActive": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "Name": {
+                    "type": "string",
+                    "example": "Carlos"
+                },
+                "Password": {
+                    "type": "string",
+                    "example": "$2a$10$hashPassword"
+                },
+                "PhoneNumber": {
+                    "type": "string",
+                    "example": "3001234567"
+                },
+                "Surname": {
+                    "type": "string",
+                    "example": "Ramírez"
+                },
+                "Username": {
+                    "type": "string",
+                    "example": "carlos.r"
+                }
+            }
+        },
+        "models.UpdateClientRequest": {
+            "type": "object",
+            "properties": {
+                "Address": {
+                    "type": "string",
+                    "example": "Calle 123 #45-67"
+                },
+                "Document": {
+                    "type": "string",
+                    "example": "1002003001"
+                },
+                "DocumentType": {
+                    "type": "string",
+                    "example": "CC"
+                },
+                "Email": {
+                    "type": "string",
+                    "example": "juan.perez@example.com"
+                },
+                "Name": {
+                    "type": "string",
+                    "example": "Juan"
+                },
+                "PhoneNumber": {
+                    "type": "string",
+                    "example": "3001234567"
+                },
+                "Surname": {
+                    "type": "string",
+                    "example": "Pérez"
+                }
+            }
+        },
+        "models.UpdateTechnicianRequest": {
+            "type": "object",
+            "properties": {
+                "Address": {
+                    "type": "string",
+                    "example": "Carrera 45 #12-34"
+                },
+                "Document": {
+                    "type": "string",
+                    "example": "9876543210"
+                },
+                "DocumentType": {
+                    "type": "string",
+                    "example": "CC"
+                },
+                "Email": {
+                    "type": "string",
+                    "example": "juan.perez@example.com"
+                },
+                "EntryDate": {
+                    "type": "string",
+                    "example": "2025-02-01T10:00:00Z"
+                },
+                "IsActive": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "Name": {
+                    "type": "string",
+                    "example": "Juan"
+                },
+                "PhoneNumber": {
+                    "type": "string",
+                    "example": "3017654321"
+                },
+                "Surname": {
+                    "type": "string",
+                    "example": "Pérez"
+                },
+                "Username": {
+                    "type": "string",
+                    "example": "juan.p"
+                }
+            }
+        }
+    }
+}

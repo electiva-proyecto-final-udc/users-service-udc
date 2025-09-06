@@ -1,0 +1,758 @@
+basePath: /user-service/v1
+definitions:
+  common.ApiResponse:
+    properties:
+      data: {}
+      error:
+        $ref: '#/definitions/common.ErrorResponse'
+      message:
+        type: string
+    type: object
+  common.AuthResult:
+    properties:
+      role:
+        description: Rol del usuario autenticado
+        example: TECHNICIAN
+        type: string
+      token:
+        description: JWT generado
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+    type: object
+  common.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      details: {}
+      message:
+        type: string
+    type: object
+  models.ChangePasswordRequest:
+    properties:
+      NewPassword:
+        example: newSecret123
+        type: string
+      Username:
+        example: carlos.r
+        type: string
+    type: object
+  models.Client:
+    properties:
+      Address:
+        example: 'Calle 123 #45-67'
+        type: string
+      Document:
+        example: "1002003001"
+        type: string
+      DocumentType:
+        example: CC
+        type: string
+      Email:
+        example: juan.perez@example.com
+        type: string
+      ID:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      Name:
+        example: Juan
+        type: string
+      PhoneNumber:
+        example: "3001234567"
+        type: string
+      Surname:
+        example: Pérez
+        type: string
+    type: object
+  models.CreateClientRequest:
+    properties:
+      Address:
+        example: 'Calle 123 #45-67'
+        type: string
+      Document:
+        example: "1002003001"
+        type: string
+      DocumentType:
+        example: CC
+        type: string
+      Email:
+        example: juan.perez@example.com
+        type: string
+      Name:
+        example: Juan
+        type: string
+      PhoneNumber:
+        example: "3001234567"
+        type: string
+      Surname:
+        example: Pérez
+        type: string
+    required:
+    - Address
+    - Document
+    - DocumentType
+    - Email
+    - Name
+    - PhoneNumber
+    - Surname
+    type: object
+  models.CreateTechnicianRequest:
+    properties:
+      Address:
+        example: 'Calle 123 #45-67'
+        type: string
+      Document:
+        example: "1234567890"
+        type: string
+      DocumentType:
+        example: CC
+        type: string
+      Email:
+        example: carlos.ramirez@example.com
+        type: string
+      EntryDate:
+        example: "2025-01-01T15:04:05Z"
+        type: string
+      IsActive:
+        example: true
+        type: boolean
+      Name:
+        example: Carlos
+        type: string
+      Password:
+        example: secret123
+        type: string
+      PhoneNumber:
+        example: "3001234567"
+        type: string
+      Surname:
+        example: Ramírez
+        type: string
+      Username:
+        example: carlos.r
+        type: string
+    required:
+    - Address
+    - Document
+    - DocumentType
+    - Email
+    - EntryDate
+    - IsActive
+    - Name
+    - Password
+    - PhoneNumber
+    - Surname
+    - Username
+    type: object
+  models.LoginRequest:
+    properties:
+      Password:
+        example: secret123
+        type: string
+      Username:
+        example: carlos.r
+        type: string
+    type: object
+  models.Technician:
+    properties:
+      Address:
+        example: 'Calle 123 #45-67'
+        type: string
+      Document:
+        example: "1234567890"
+        type: string
+      DocumentType:
+        example: CC
+        type: string
+      Email:
+        example: carlos.ramirez@example.com
+        type: string
+      EntryDate:
+        example: "2025-01-01T15:04:05Z"
+        type: string
+      ID:
+        example: f47ac10b-58cc-4372-a567-0e02b2c3d479
+        type: string
+      IsActive:
+        example: true
+        type: boolean
+      Name:
+        example: Carlos
+        type: string
+      Password:
+        example: $2a$10$hashPassword
+        type: string
+      PhoneNumber:
+        example: "3001234567"
+        type: string
+      Surname:
+        example: Ramírez
+        type: string
+      Username:
+        example: carlos.r
+        type: string
+    type: object
+  models.UpdateClientRequest:
+    properties:
+      Address:
+        example: 'Calle 123 #45-67'
+        type: string
+      Document:
+        example: "1002003001"
+        type: string
+      DocumentType:
+        example: CC
+        type: string
+      Email:
+        example: juan.perez@example.com
+        type: string
+      Name:
+        example: Juan
+        type: string
+      PhoneNumber:
+        example: "3001234567"
+        type: string
+      Surname:
+        example: Pérez
+        type: string
+    type: object
+  models.UpdateTechnicianRequest:
+    properties:
+      Address:
+        example: 'Carrera 45 #12-34'
+        type: string
+      Document:
+        example: "9876543210"
+        type: string
+      DocumentType:
+        example: CC
+        type: string
+      Email:
+        example: juan.perez@example.com
+        type: string
+      EntryDate:
+        example: "2025-02-01T10:00:00Z"
+        type: string
+      IsActive:
+        example: false
+        type: boolean
+      Name:
+        example: Juan
+        type: string
+      PhoneNumber:
+        example: "3017654321"
+        type: string
+      Surname:
+        example: Pérez
+        type: string
+      Username:
+        example: juan.p
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Micro para gestión de usuarios, clientes y técnicos
+  title: Microservicio de usuario UDC
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Retorna un token JWT si las credenciales son correctas
+      parameters:
+      - description: Credenciales de login
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/common.AuthResult'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+      summary: Logearse como técnico o admin
+      tags:
+      - auth
+  /changePassword:
+    patch:
+      consumes:
+      - application/json
+      description: Cambia la contraseña de un técnico existente
+      parameters:
+      - description: Datos para cambiar contraseña
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.ChangePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Ejemplo: {\"message\":\"PASSWORD_CHANGED_SUCCESSFULLY\"}'
+          schema:
+            $ref: '#/definitions/common.ApiResponse'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+      summary: Cambiar contraseña
+      tags:
+      - technicians
+  /clients:
+    get:
+      description: Obtiene la lista completa de clientes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.Client'
+                  type: array
+              type: object
+      summary: Listar clientes
+      tags:
+      - clients
+  /clients/{clientID}:
+    get:
+      description: Busca un cliente por su UUID
+      parameters:
+      - description: ID del cliente
+        in: path
+        name: clientID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Client'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+      summary: Obtener cliente
+      tags:
+      - clients
+  /createClient:
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevo cliente en el sistema
+      parameters:
+      - description: Datos del cliente
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateClientRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Client'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+      summary: Crear cliente
+      tags:
+      - clients
+  /createTechnician:
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevo técnico en el sistema
+      parameters:
+      - description: Datos del técnico
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateTechnicianRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Technician'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+      summary: Crear técnico
+      tags:
+      - technicians
+  /deleteClient/{clientID}:
+    delete:
+      description: Elimina un cliente por su UUID
+      parameters:
+      - description: ID del cliente
+        in: path
+        name: clientID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Ejemplo: {\"message\":\"CLIENT_DELETED_SUCCESSFULLY\"}'
+          schema:
+            $ref: '#/definitions/common.ApiResponse'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+      summary: Eliminar cliente
+      tags:
+      - clients
+  /deleteTechnician/{technicianID}:
+    delete:
+      description: Elimina un técnico por su ID
+      parameters:
+      - description: ID del técnico
+        in: path
+        name: technicianID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Ejemplo: {\"message\":\"TECHNICIAN_DELETED_SUCCESSFULLY\"}'
+          schema:
+            $ref: '#/definitions/common.ApiResponse'
+        "404":
+          description: Not Found
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+      summary: Eliminar técnico
+      tags:
+      - technicians
+  /technician/{technicianID}:
+    get:
+      description: Busca un técnico por su ID
+      parameters:
+      - description: ID del técnico
+        in: path
+        name: technicianID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Technician'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+      summary: Obtener técnico
+      tags:
+      - technicians
+  /technicians:
+    get:
+      description: Obtiene la lista completa de técnicos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.Technician'
+                  type: array
+              type: object
+      summary: Listar técnicos
+      tags:
+      - technicians
+  /updateClient/{clientID}:
+    put:
+      consumes:
+      - application/json
+      description: Actualiza los datos de un cliente existente
+      parameters:
+      - description: ID del cliente
+        in: path
+        name: clientID
+        required: true
+        type: string
+      - description: Datos del cliente
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateClientRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Client'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+      summary: Actualizar cliente
+      tags:
+      - clients
+  /updateTechnician/{technicianID}:
+    put:
+      consumes:
+      - application/json
+      description: Actualiza los datos de un técnico existente
+      parameters:
+      - description: ID del técnico
+        in: path
+        name: technicianID
+        required: true
+        type: string
+      - description: Datos del técnico
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateTechnicianRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Technician'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.ApiResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/common.ErrorResponse'
+              type: object
+      summary: Actualizar técnico
+      tags:
+      - technicians
+swagger: "2.0"

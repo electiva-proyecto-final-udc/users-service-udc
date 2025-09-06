@@ -1,3 +1,8 @@
+// @title Microservicio de usuario UDC
+// @version 1.0
+// @description Micro para gestión de usuarios, clientes y técnicos
+// @host localhost:8080
+// @BasePath /user-service/v1
 package main
 
 import (
@@ -8,6 +13,7 @@ import (
 	"user-service-ucd/src/app/controllers"
 	"user-service-ucd/src/app/repository"
 	"user-service-ucd/src/app/services"
+	_ "user-service-ucd/docs"
 
 	"go.uber.org/fx"
 )
