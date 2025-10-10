@@ -24,7 +24,7 @@ func (ts *TechnicianService) NewTechnician(technician models.Technician) error {
 }
 
 // Obtener todos los técnicos
-func (ts *TechnicianService) GetAllTechnicians() ([]models.GetTechnicianRequest, error) {
+func (ts *TechnicianService) GetAllTechnicians() ([]models.UserDataView, error) {
 	return ts.tr.GetAllTechnicians()
 }
 

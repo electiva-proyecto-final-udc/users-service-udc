@@ -3,40 +3,41 @@ package repository
 import (
 	"fmt"
 	"user-service-ucd/src/app/models"
+	"user-service-ucd/src/database"
+
+	"gorm.io/gorm"
 )
 
 // Se define la estructura del repositorio
 type TechnicianRepository struct {
-	db []models.Technician
+	dbFake []models.Technician
+	db     *gorm.DB
 }
 
 // Constructor: se crea una nueva instancia
-func NewTechnicianRepository() *TechnicianRepository {
+func NewTechnicianRepository(db *gorm.DB) *TechnicianRepository {
 	return &TechnicianRepository{
-		db: []models.Technician{},
+		dbFake: []models.Technician{},
+		db: database.DB,
 	}
 }
 
 // Crear un nuevo técnico
 func (tr *TechnicianRepository) CreateNewTechnician(technician models.Technician) error {
-	tr.db = append(tr.db, technician)
+	tr.dbFake = append(tr.dbFake, technician)
 	return nil
 }
 
-// Obtener todos los técnicos 
-func (tr *TechnicianRepository) GetAllTechnicians() ([]models.GetTechnicianRequest, error) {
-	technicians := make([]models.GetTechnicianRequest, 0, len(tr.db))
-
-	for _, t := range tr.db {
-		technicians = append(technicians, models.GetTechnicianRequest(t))
-	}
-
-	return technicians, nil
+// Obtener todos los técnicos
+func (tr *TechnicianRepository) GetAllTechnicians() ([]models.UserDataView, error) {
+	var users []models.UserDataView
+	err := tr.db.Where("role_code = ?", "3").Find(&users).Error
+	return users, err
 }
 
 // Obtener un técnico por ID
 func (tr *TechnicianRepository) GetTechnicianById(id string) (models.GetTechnicianRequest, error) {
-	for _, t := range tr.db {
+	for _, t := range tr.dbFake {
 		if t.ID == id {
 			technician := models.GetTechnicianRequest(t)
 			return technician, nil
@@ -47,19 +48,19 @@ func (tr *TechnicianRepository) GetTechnicianById(id string) (models.GetTechnici
 
 // Actualizar técnico por ID
 func (tr *TechnicianRepository) UpdateTechnician(id string, updated models.Technician) error {
-	for i, t := range tr.db {
+	for i, t := range tr.dbFake {
 		if t.ID == id {
 			updated.ID = id
-			tr.db[i].DocumentType = updated.DocumentType
-			tr.db[i].Document = updated.Document
-			tr.db[i].Name = updated.Name
-			tr.db[i].Surname = updated.Surname
-			tr.db[i].Email = updated.Email
-			tr.db[i].PhoneNumber = updated.PhoneNumber
-			tr.db[i].Username = updated.Username
-			tr.db[i].Address = updated.Address
-			tr.db[i].IsActive = updated.IsActive
-			tr.db[i].EntryDate = updated.EntryDate
+			tr.dbFake[i].DocumentType = updated.DocumentType
+			tr.dbFake[i].Document = updated.Document
+			tr.dbFake[i].Name = updated.Name
+			tr.dbFake[i].Surname = updated.Surname
+			tr.dbFake[i].Email = updated.Email
+			tr.dbFake[i].PhoneNumber = updated.PhoneNumber
+			tr.dbFake[i].Username = updated.Username
+			tr.dbFake[i].Address = updated.Address
+			tr.dbFake[i].IsActive = updated.IsActive
+			tr.dbFake[i].EntryDate = updated.EntryDate
 			return nil
 		}
 	}
@@ -68,9 +69,9 @@ func (tr *TechnicianRepository) UpdateTechnician(id string, updated models.Techn
 
 // Eliminar técnico por ID
 func (tr *TechnicianRepository) DeleteTechnician(id string) error {
-	for i, t := range tr.db {
+	for i, t := range tr.dbFake {
 		if t.ID == id {
-			tr.db = append(tr.db[:i], tr.db[i+1:]...)
+			tr.dbFake = append(tr.dbFake[:i], tr.dbFake[i+1:]...)
 			return nil
 		}
 	}
@@ -79,9 +80,9 @@ func (tr *TechnicianRepository) DeleteTechnician(id string) error {
 
 // Cambiar contraseña de un técnico por Username
 func (tr *TechnicianRepository) ChangePassword(username, newPassword string) error {
-	for i, t := range tr.db {
+	for i, t := range tr.dbFake {
 		if t.Username == username {
-			tr.db[i].Password = newPassword
+			tr.dbFake[i].Password = newPassword
 			return nil
 		}
 	}
@@ -90,7 +91,7 @@ func (tr *TechnicianRepository) ChangePassword(username, newPassword string) err
 
 // FindByUsername busca por Username o Email
 func (tr *TechnicianRepository) FindByUsername(usernameOrEmail string) (*models.Technician, error) {
-	for _, t := range tr.db {
+	for _, t := range tr.dbFake {
 		if t.Username == usernameOrEmail || t.Email == usernameOrEmail {
 			return &t, nil
 		}

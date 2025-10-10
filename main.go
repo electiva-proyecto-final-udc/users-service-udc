@@ -9,11 +9,12 @@ import (
 	"context"
 	"log"
 	"net/http"
+	_ "user-service-ucd/docs"
 	"user-service-ucd/src/app"
 	"user-service-ucd/src/app/controllers"
 	"user-service-ucd/src/app/repository"
 	"user-service-ucd/src/app/services"
-	_ "user-service-ucd/docs"
+	"user-service-ucd/src/database"
 
 	"go.uber.org/fx"
 )
@@ -42,6 +43,9 @@ func main() {
 	// Inyección de dependencias
 	app := fx.New(
 		fx.Provide(
+			// Inicializa la conexión con la BD
+			database.InitDB,
+			
 			//Dependencias clientes
 			repository.NewClientRepository,
 			services.NewClientService,
