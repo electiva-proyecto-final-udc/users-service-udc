@@ -1,7 +1,7 @@
 package models
 
 type UserDataView struct {
-	ID                       string    `json:"id" gorm:"column:id"`
+	ID                       string  `json:"id" gorm:"column:id"`
 	DocumentTypeName         string  `json:"document_type_name" gorm:"column:document_type_name"`
 	DocumentTypeDescription  string  `json:"document_type_description" gorm:"column:document_type_description"`
 	DocumentCode             string  `json:"document_code" gorm:"column:document_code"`

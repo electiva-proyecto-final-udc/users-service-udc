@@ -1,14 +1,16 @@
 package app
 
 import (
+	"net/http"
 	"user-service-ucd/src/app/controllers"
 
 	"github.com/gorilla/mux"
-	"github.com/swaggo/http-swagger"
+	"github.com/rs/cors"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type Routes struct {
-	Router *mux.Router
+	Router http.Handler // 👈 cambiamos a http.Handler, no *mux.Router
 }
 
 func NewRouter(
@@ -40,7 +42,18 @@ func NewRouter(
 	api.HandleFunc("/deleteTechnician/{technicianID}", technicianController.DeleteTechnician).Methods("DELETE")
 	api.HandleFunc("/changePassword", technicianController.ChangePassword).Methods("PATCH")
 
+	// Configurar CORS globalmente
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:5173"}, // React
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
+		AllowedHeaders:   []string{"Authorization", "Content-Type"},
+		AllowCredentials: true,
+	})
+
+	// Aplicar CORS al router
+	handler := c.Handler(r)
+
 	return &Routes{
-		Router: r,
+		Router: handler, // 👈 ahora Router es un http.Handler
 	}
 }
