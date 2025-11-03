@@ -45,7 +45,7 @@ func main() {
 		fx.Provide(
 			// Inicializa la conexión con la BD
 			database.InitDB,
-			
+
 			//Dependencias clientes
 			repository.NewClientRepository,
 			services.NewClientService,
@@ -54,12 +54,12 @@ func main() {
 			//Dependencias Técnicos
 			repository.NewTechnicianRepository,
 			services.NewTechnicianService,
-			controllers.NewTechnicianController,
+			controllers.NewUserController,
 
 			// Dependencias auth
 			services.NewAuthService,
 			controllers.NewAuthController,
-			
+
 			app.NewRouter,
 		),
 		fx.Invoke(RunServer),

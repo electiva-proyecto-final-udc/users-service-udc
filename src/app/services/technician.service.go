@@ -1,6 +1,7 @@
 package services
 
 import (
+	"user-service-ucd/src/app/dto"
 	"user-service-ucd/src/app/models"
 	"user-service-ucd/src/app/repository"
 
@@ -19,7 +20,7 @@ func NewTechnicianService(tr *repository.TechnicianRepository) *TechnicianServic
 }
 
 // Crear nuevo técnico
-func (ts *TechnicianService) NewTechnician(technician models.Technician) error {
+func (ts *TechnicianService) NewTechnician(technician dto.CreateTechnicianDTO) error {
 	return ts.tr.CreateNewTechnician(technician)
 }
 
@@ -29,12 +30,12 @@ func (ts *TechnicianService) GetAllTechnicians() ([]models.UserDataView, error) 
 }
 
 // Obtener técnico por ID
-func (ts *TechnicianService) GetTechnicianById(id string) (models.GetTechnicianRequest, error) {
+func (ts *TechnicianService) GetTechnicianById(id string) (models.UserDataView, error) {
 	return ts.tr.GetTechnicianById(id)
 }
 
 // Actualizar técnico
-func (ts *TechnicianService) UpdateTechnician(id string, technician models.Technician) error {
+func (ts *TechnicianService) UpdateTechnician(id string, technician dto.UpdateTechnicianDTO) error {
 	return ts.tr.UpdateTechnician(id, technician)
 }
 
@@ -44,10 +45,11 @@ func (ts *TechnicianService) DeleteTechnician(id string) error {
 }
 
 // Cambiar contraseña
-func (ts *TechnicianService) ChangePassword(username, newPassword string) error {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+func (ts *TechnicianService) ChangePassword(changePassWordRequest dto.ChangePasswordDTO) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(changePassWordRequest.NewPassword), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
-	return ts.tr.ChangePassword(username, string(hashedPassword))
+	changePassWordRequest.NewPassword = string(hashedPassword)
+	return ts.tr.ChangePassword(changePassWordRequest)
 }

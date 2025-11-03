@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
+	"user-service-ucd/src/app/dto"
 	"user-service-ucd/src/app/models"
 	"user-service-ucd/src/app/services"
 	"user-service-ucd/src/common"
@@ -15,7 +16,7 @@ type TechnicianController struct {
 	ts *services.TechnicianService
 }
 
-func NewTechnicianController(ts *services.TechnicianService) *TechnicianController {
+func NewUserController(ts *services.TechnicianService) *TechnicianController {
 	return &TechnicianController{
 		ts: ts,
 	}
@@ -34,11 +35,11 @@ func NewTechnicianController(ts *services.TechnicianService) *TechnicianControll
 // @Failure      500 {object} common.ApiResponse{error=common.ErrorResponse}
 // @Router       /createTechnician [post]
 func (tc *TechnicianController) AddNewTechnician(w http.ResponseWriter, r *http.Request) {
-	var createTechRequest models.CreateTechnicianRequest
+	var createTechRequest dto.CreateTechnicianDTO
 	if err := json.NewDecoder(r.Body).Decode(&createTechRequest); err != nil {
 		common.JSONResponse(w, http.StatusBadRequest, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 400,
+				Code:    400,
 				Message: "Invalid request body",
 				Details: err.Error(),
 			},
@@ -49,7 +50,7 @@ func (tc *TechnicianController) AddNewTechnician(w http.ResponseWriter, r *http.
 	if errors := utils.ValidateEntity(createTechRequest); errors != nil {
 		common.JSONResponse(w, http.StatusUnprocessableEntity, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 422,
+				Code:    422,
 				Message: "Invalid data",
 				Details: errors,
 			},
@@ -57,19 +58,17 @@ func (tc *TechnicianController) AddNewTechnician(w http.ResponseWriter, r *http.
 		return
 	}
 
-	technician, err := models.NewTechnician(createTechRequest)
+	err := tc.ts.NewTechnician(createTechRequest)
 	if err != nil {
 		common.JSONResponse(w, http.StatusInternalServerError, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 500,
+				Code:    500,
 				Message: "Error creating technician",
 				Details: err.Error(),
 			},
 		})
 		return
 	}
-
-	tc.ts.NewTechnician(*technician)
 	common.JSONResponse(w, http.StatusCreated, common.ApiResponse{
 		Message: "TECHNICIAN_CREATED_SUCCESSFULLY",
 		Data:    createTechRequest,
@@ -104,11 +103,11 @@ func (tc *TechnicianController) GetTechnicianById(w http.ResponseWriter, r *http
 	requestID := mux.Vars(r)["technicianID"]
 	technician, err := tc.ts.GetTechnicianById(requestID)
 
-	if err != nil {
+	if err != nil || (technician == models.UserDataView{}) {
 		common.JSONResponse(w, http.StatusNotFound, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 404,
-				Message: "TECHNICIAN_NOT_FOUND",
+				Code:    404,
+				Message: "USER_NOT_FOUND",
 			},
 		})
 		return
@@ -137,11 +136,11 @@ func (tc *TechnicianController) GetTechnicianById(w http.ResponseWriter, r *http
 func (tc *TechnicianController) UpdateTechnician(w http.ResponseWriter, r *http.Request) {
 	technicianId := mux.Vars(r)["technicianID"]
 
-	var request models.UpdateTechnicianRequest
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+	var updatedTechnician dto.UpdateTechnicianDTO
+	if err := json.NewDecoder(r.Body).Decode(&updatedTechnician); err != nil {
 		common.JSONResponse(w, http.StatusBadRequest, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 400,
+				Code:    400,
 				Message: "Invalid request body",
 				Details: err.Error(),
 			},
@@ -149,10 +148,10 @@ func (tc *TechnicianController) UpdateTechnician(w http.ResponseWriter, r *http.
 		return
 	}
 
-	if errors := utils.ValidateEntity(request); errors != nil {
+	if errors := utils.ValidateEntity(updatedTechnician); errors != nil {
 		common.JSONResponse(w, http.StatusUnprocessableEntity, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 422,
+				Code:    422,
 				Message: "Invalid data",
 				Details: errors,
 			},
@@ -160,24 +159,12 @@ func (tc *TechnicianController) UpdateTechnician(w http.ResponseWriter, r *http.
 		return
 	}
 
-	updatedTechnician, err := models.NewTechnicianUpdated(request, technicianId)
-	if err != nil {
-		common.JSONResponse(w, http.StatusInternalServerError, common.ApiResponse{
-			Error: &common.ErrorResponse{
-				Code: 500,
-				Message: "Error updating technician",
-				Details: err.Error(),
-			},
-		})
-		return
-	}
-
-	err = tc.ts.UpdateTechnician(technicianId, *updatedTechnician)
+	err := tc.ts.UpdateTechnician(technicianId, updatedTechnician)
 	if err != nil {
 		common.JSONResponse(w, http.StatusNotFound, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 404,
-				Message: "TECHNICIAN_NOT_FOUND",
+				Code:    404,
+				Message: err.Error(),
 			},
 		})
 		return
@@ -185,7 +172,7 @@ func (tc *TechnicianController) UpdateTechnician(w http.ResponseWriter, r *http.
 
 	common.JSONResponse(w, http.StatusOK, common.ApiResponse{
 		Message: "TECHNICIAN_UPDATED_SUCCESSFULLY",
-		Data:    request,
+		Data:    updatedTechnician,
 	})
 }
 
@@ -205,7 +192,7 @@ func (tc *TechnicianController) DeleteTechnician(w http.ResponseWriter, r *http.
 	if err != nil {
 		common.JSONResponse(w, http.StatusNotFound, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 404,
+				Code:    404,
 				Message: "TECHNICIAN_NOT_FOUND",
 			},
 		})
@@ -229,11 +216,11 @@ func (tc *TechnicianController) DeleteTechnician(w http.ResponseWriter, r *http.
 // @Failure      404 {object} common.ApiResponse{error=common.ErrorResponse}
 // @Router       /changePassword [patch]
 func (tc *TechnicianController) ChangePassword(w http.ResponseWriter, r *http.Request) {
-	var request models.ChangePasswordRequest
+	var request dto.ChangePasswordDTO
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		common.JSONResponse(w, http.StatusBadRequest, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 400,
+				Code:    400,
 				Message: "Invalid request body",
 				Details: err.Error(),
 			},
@@ -241,21 +228,22 @@ func (tc *TechnicianController) ChangePassword(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	if request.Username == "" || request.NewPassword == "" {
-		common.JSONResponse(w, http.StatusBadRequest, common.ApiResponse{
+	if errors := utils.ValidateEntity(request); errors != nil {
+		common.JSONResponse(w, http.StatusUnprocessableEntity, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 400,
-				Message: "Username and new password are required",
+				Code:    422,
+				Message: "Invalid data",
+				Details: errors,
 			},
 		})
 		return
 	}
 
-	err := tc.ts.ChangePassword(request.Username, request.NewPassword)
+	err := tc.ts.ChangePassword(request)
 	if err != nil {
 		common.JSONResponse(w, http.StatusNotFound, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 404,
+				Code:    404,
 				Message: "TECHNICIAN_NOT_FOUND",
 				Details: err.Error(),
 			},
