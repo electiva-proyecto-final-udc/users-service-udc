@@ -2,20 +2,6 @@ package models
 
 import "encoding/json"
 
-// REQUESTS MODELS (DTO'S)
-
-type LoginRequest struct {
-	Username string `json:"Username" example:"carlos.r"`
-	Password string `json:"Password" example:"secret123"`
-}
-
-type UserInfo struct {
-	ID       string `json:"ID"`
-	Username string `json:"Username"`
-	Email    string `json:"Email"`
-	Role     string `json:"Role"`
-}
-
 //  ENTITIES
 
 type UserDataView struct {
@@ -28,11 +14,13 @@ type UserDataView struct {
 	RoleCode                string  `json:"role_code" gorm:"column:role_code"`
 	Name                    string  `json:"name" gorm:"column:name"`
 	Surname                 string  `json:"surname" gorm:"column:surname"`
+	Username                string  `json:"username" gorm:"column:username"`
 	Email                   string  `json:"email" gorm:"column:email"`
 	PhoneNumber             string  `json:"phone_number" gorm:"column:phone_number"`
 	Address                 string  `json:"address" gorm:"column:address"`
 	IsActive                bool    `json:"is_active" gorm:"column:isactive"`
 	Permissions             *string `json:"permissions" gorm:"column:permissions"`
+	UserId                  string  `json:"user_id" gorm:"column:user_id"`
 }
 
 type UserProfileEntity struct {

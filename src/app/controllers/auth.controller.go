@@ -3,7 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
-	"user-service-ucd/src/app/models"
+	"user-service-ucd/src/app/dto"
 	"user-service-ucd/src/app/services"
 	"user-service-ucd/src/common"
 )
@@ -29,7 +29,7 @@ func NewAuthController(as *services.AuthService) *AuthController {
 // @Failure      500 {object} common.ApiResponse{error=common.ErrorResponse}
 // @Router       /auth/login [post]
 func (ac *AuthController) Login(w http.ResponseWriter, r *http.Request) {
-	var req models.LoginRequest
+	var req dto.LoginRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		common.JSONResponse(w, http.StatusBadRequest, common.ApiResponse{
 			Error: &common.ErrorResponse{
@@ -41,7 +41,7 @@ func (ac *AuthController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := ac.as.Login(req.Username, req.Password)
+	response, err := ac.as.Login(req)
 	if err != nil {
 		common.JSONResponse(w, http.StatusUnauthorized, common.ApiResponse{
 			Error: &common.ErrorResponse{

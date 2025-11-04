@@ -21,6 +21,11 @@ func NewTechnicianService(tr *repository.TechnicianRepository) *TechnicianServic
 
 // Crear nuevo técnico
 func (ts *TechnicianService) NewTechnician(technician dto.CreateTechnicianDTO) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(technician.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	technician.Password = string(hashedPassword)
 	return ts.tr.CreateNewTechnician(technician)
 }
 

@@ -57,6 +57,7 @@ func main() {
 			controllers.NewUserController,
 
 			// Dependencias auth
+			repository.NewUserRepository,
 			services.NewAuthService,
 			controllers.NewAuthController,
 

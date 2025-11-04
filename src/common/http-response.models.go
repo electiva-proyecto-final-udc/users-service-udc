@@ -13,6 +13,5 @@ type ErrorResponse struct {
 }
 
 type AuthResult struct {
-    Role  string `json:"role" example:"TECHNICIAN"` // Rol del usuario autenticado
     Token string `json:"token" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."` // JWT generado
 }

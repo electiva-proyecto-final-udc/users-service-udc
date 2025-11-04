@@ -12,15 +12,13 @@ import (
 
 // Se define la estructura del repositorio
 type TechnicianRepository struct {
-	dbFake []dto.TechnicianDTO
-	db     *gorm.DB
+	db *gorm.DB
 }
 
 // Constructor: se crea una nueva instancia
 func NewTechnicianRepository(db *gorm.DB) *TechnicianRepository {
 	return &TechnicianRepository{
-		dbFake: []dto.TechnicianDTO{},
-		db:     database.DB,
+		db: database.DB,
 	}
 }
 
@@ -154,16 +152,6 @@ func (tr *TechnicianRepository) ChangePassword(changePasswordRequest dto.ChangeP
 	}
 
 	return nil
-}
-
-// FindByUsername busca por Username o Email
-func (tr *TechnicianRepository) FindByUsername(usernameOrEmail string) (*dto.TechnicianDTO, error) {
-	for _, t := range tr.dbFake {
-		if t.Username == usernameOrEmail || t.Email == usernameOrEmail {
-			return &t, nil
-		}
-	}
-	return nil, fmt.Errorf("technician not found")
 }
 
 // SET ACTIVE
