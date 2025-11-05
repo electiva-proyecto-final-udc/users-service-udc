@@ -5,9 +5,3 @@ type LoginRequest struct {
 	Password string `json:"Password" example:"secret123"`
 }
 
-type UserInfo struct {
-	ID       string `json:"ID"`
-	Username string `json:"Username"`
-	Email    string `json:"Email"`
-	Role     string `json:"Role"`
-}

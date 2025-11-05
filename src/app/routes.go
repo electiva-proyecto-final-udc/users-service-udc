@@ -3,6 +3,7 @@ package app
 import (
 	"net/http"
 	"user-service-ucd/src/app/controllers"
+	"user-service-ucd/src/middleware"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
@@ -10,7 +11,7 @@ import (
 )
 
 type Routes struct {
-	Router http.Handler // 👈 cambiamos a http.Handler, no *mux.Router
+	Router http.Handler 
 }
 
 func NewRouter(
@@ -27,24 +28,28 @@ func NewRouter(
 	// Auth
 	api.HandleFunc("/auth/login", authController.Login).Methods("POST")
 
+	// Subrouter protegido
+	protected := api.NewRoute().Subrouter()
+	protected.Use(middleware.VerifyToken)
+
 	// Rutas Cliente
-	api.HandleFunc("/clients", clientController.GetAllClients).Methods("GET")
-	api.HandleFunc("/clients/{clientID}", clientController.GetClientById).Methods("GET")
-	api.HandleFunc("/createClient", clientController.AddNewClient).Methods("POST")
-	api.HandleFunc("/updateClient/{clientID}", clientController.UpdateClient).Methods("PUT")
-	api.HandleFunc("/deleteClient/{clientID}", clientController.DeleteClient).Methods("DELETE")
+	protected.HandleFunc("/clients", clientController.GetAllClients).Methods("GET")
+	protected.HandleFunc("/clients/{clientID}", clientController.GetClientById).Methods("GET")
+	protected.HandleFunc("/createClient", clientController.AddNewClient).Methods("POST")
+	protected.HandleFunc("/updateClient/{clientID}", clientController.UpdateClient).Methods("PUT")
+	protected.HandleFunc("/deleteClient/{clientID}", clientController.DeleteClient).Methods("DELETE")
 
 	// Rutas Técnico
-	api.HandleFunc("/technicians", technicianController.GetAllTechnicians).Methods("GET")
-	api.HandleFunc("/technician/{technicianID}", technicianController.GetTechnicianById).Methods("GET")
-	api.HandleFunc("/createTechnician", technicianController.AddNewTechnician).Methods("POST")
-	api.HandleFunc("/updateTechnician/{technicianID}", technicianController.UpdateTechnician).Methods("PUT")
-	api.HandleFunc("/deleteTechnician/{technicianID}", technicianController.DeleteTechnician).Methods("DELETE")
-	api.HandleFunc("/changePassword", technicianController.ChangePassword).Methods("PATCH")
+	protected.HandleFunc("/technicians", technicianController.GetAllTechnicians).Methods("GET")
+	protected.HandleFunc("/technician/{technicianID}", technicianController.GetTechnicianById).Methods("GET")
+	protected.HandleFunc("/createTechnician", technicianController.AddNewTechnician).Methods("POST")
+	protected.HandleFunc("/updateTechnician/{technicianID}", technicianController.UpdateTechnician).Methods("PUT")
+	protected.HandleFunc("/deleteTechnician/{technicianID}", technicianController.DeleteTechnician).Methods("DELETE")
+	protected.HandleFunc("/changePassword", technicianController.ChangePassword).Methods("PATCH")
 
 	// Configurar CORS globalmente
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173"}, // React
+		AllowedOrigins:   []string{"http://localhost:5173"}, // Front
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
 		AllowCredentials: true,
@@ -54,6 +59,6 @@ func NewRouter(
 	handler := c.Handler(r)
 
 	return &Routes{
-		Router: handler, // 👈 ahora Router es un http.Handler
+		Router: handler,
 	}
 }

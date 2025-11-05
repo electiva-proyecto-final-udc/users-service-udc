@@ -47,6 +47,7 @@ func (ac *AuthController) Login(w http.ResponseWriter, r *http.Request) {
 			Error: &common.ErrorResponse{
                 Code: 401,
 				Message: "INVALID_CREDENTIALS",
+				Details: err.Error(),
 			},
 		})
 		return
