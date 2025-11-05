@@ -24,7 +24,7 @@ func (as *AuthService) Login(loginReq dto.LoginRequest) (authResult common.AuthR
 		return common.AuthResult{}, errorUser
 	}
 
-	userDataInfo.ID = userLogged.Email
+	userDataInfo.ID = userLogged.ID
 	userDataInfo.Email = userLogged.Email
 	userDataInfo.Username = userLogged.Username
 	userDataInfo.Role = userLogged.Role
