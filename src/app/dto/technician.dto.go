@@ -57,10 +57,10 @@ type GetTechnicianDTO struct {
 }
 
 type UpdateTechnicianDTO struct {
-	DocumentTypeId string `json:"DocumentTypeId" validate:"required" example:"CC"`
-	Document       string `json:"Document" validate:"required" example:"9876543210"`
-	Name           string `json:"Name" validate:"required" example:"Juan"`
-	Email          string `json:"Email" validate:"required" example:"juan.perez@example.com"`
-	PhoneNumber    string `json:"PhoneNumber" validate:"required" example:"3017654321"`
-	Address        string `json:"Address" validate:"required" example:"Carrera 45 #12-34"`
+	DocumentTypeId string `json:"DocumentTypeId" validate:"omitempty" example:"CC"`
+	Document       string `json:"Document" validate:"omitempty" example:"9876543210"`
+	Name           string `json:"Name" validate:"omitempty" example:"Juan"`
+	Email          string `json:"Email" validate:"omitempty" example:"juan.perez@example.com"`
+	PhoneNumber    string `json:"PhoneNumber" validate:"omitempty" example:"3017654321"`
+	Address        string `json:"Address" validate:"omitempty" example:"Carrera 45 #12-34"`
 }

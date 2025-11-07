@@ -36,14 +36,14 @@ func NewRouter(
 	protected.HandleFunc("/clients", clientController.GetAllClients).Methods("GET")
 	protected.HandleFunc("/clients/{clientID}", clientController.GetClientById).Methods("GET")
 	protected.HandleFunc("/createClient", clientController.AddNewClient).Methods("POST")
-	protected.HandleFunc("/updateClient/{clientID}", clientController.UpdateClient).Methods("PUT")
+	protected.HandleFunc("/updateClient/{clientID}", clientController.UpdateClient).Methods("PATCH")
 	protected.HandleFunc("/deleteClient/{clientID}", clientController.DeleteClient).Methods("DELETE")
 
 	// Rutas Técnico
 	protected.HandleFunc("/technicians", technicianController.GetAllTechnicians).Methods("GET")
 	protected.HandleFunc("/technician/{technicianID}", technicianController.GetTechnicianById).Methods("GET")
 	protected.HandleFunc("/createTechnician", technicianController.AddNewTechnician).Methods("POST")
-	protected.HandleFunc("/updateTechnician/{technicianID}", technicianController.UpdateTechnician).Methods("PUT")
+	protected.HandleFunc("/updateTechnician/{technicianID}", technicianController.UpdateTechnician).Methods("PATCH")
 	protected.HandleFunc("/deleteTechnician/{technicianID}", technicianController.DeleteTechnician).Methods("DELETE")
 	protected.HandleFunc("/changePassword", technicianController.ChangePassword).Methods("PATCH")
 

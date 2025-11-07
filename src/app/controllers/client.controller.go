@@ -3,12 +3,12 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
+	"user-service-ucd/src/app/dto"
 	"user-service-ucd/src/app/models"
 	"user-service-ucd/src/app/services"
 	"user-service-ucd/src/common"
 	"user-service-ucd/utils"
 
-	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 )
 
@@ -29,16 +29,16 @@ func NewClientController(cs *services.ClientService) *ClientController {
 // @Accept       json
 // @Produce      json
 // @Param        request body models.CreateClientRequest true "Datos del cliente"
-// @Success      201 {object} common.ApiResponse{data=models.Client} 
+// @Success      201 {object} common.ApiResponse{data=models.Client}
 // @Failure      400 {object} common.ApiResponse{error=common.ErrorResponse}
 // @Failure      422 {object} common.ApiResponse{error=common.ErrorResponse}
 // @Router       /createClient [post]
 func (cc *ClientController) AddNewClient(w http.ResponseWriter, r *http.Request) {
-	var request models.CreateClientRequest
+	var request dto.CreateClientRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		common.JSONResponse(w, http.StatusBadRequest, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 400,
+				Code:    400,
 				Message: "Invalid request body",
 				Details: err.Error(),
 			},
@@ -49,7 +49,7 @@ func (cc *ClientController) AddNewClient(w http.ResponseWriter, r *http.Request)
 	if errors := utils.ValidateEntity(request); errors != nil {
 		common.JSONResponse(w, http.StatusUnprocessableEntity, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 422,
+				Code:    422,
 				Message: "Invalid data",
 				Details: errors,
 			},
@@ -57,17 +57,16 @@ func (cc *ClientController) AddNewClient(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	client := models.NewClient(
-		request.DocumentType,
-		request.Document,
-		request.Name,
-		request.Surname,
-		request.Email,
-		request.PhoneNumber,
-		request.Address,
-	)
-
-	cc.cs.NewClient(*client)
+	if err := cc.cs.NewClient(request); err != nil {
+		common.JSONResponse(w, http.StatusBadRequest, common.ApiResponse{
+			Error: &common.ErrorResponse{
+				Code:    400,
+				Message: "ERROR CREATING CLIENT",
+				Details: err.Error(),
+			},
+		})
+		return
+	}
 	common.JSONResponse(w, http.StatusCreated, common.ApiResponse{
 		Message: "CLIENT_CREATED_SUCCESSFULLY",
 		Data:    request,
@@ -108,24 +107,23 @@ func (cc *ClientController) GetAllClients(w http.ResponseWriter, r *http.Request
 // @Router       /clients/{clientID} [get]
 func (cc *ClientController) GetClientById(w http.ResponseWriter, r *http.Request) {
 	requestID := mux.Vars(r)["clientID"]
-	clientID, _ := uuid.Parse(requestID)
-	client, err := cc.cs.GetClientById(clientID)
+	client, err := cc.cs.GetClientById(requestID)
 
 	if err != nil {
 		common.JSONResponse(w, http.StatusInternalServerError, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 500,
+				Code:    500,
 				Message: "ERROR_FETCHING_CLIENT",
-				Details: err,
+				Details: err.Error(),
 			},
 		})
 		return
 	}
 
-	if (client == models.GetClientRequest{}) {
+	if (client == models.ClientDataView{}) {
 		common.JSONResponse(w, http.StatusNotFound, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 404,
+				Code:    404,
 				Message: "CLIENT_NOT_FOUND",
 			},
 		})
@@ -153,23 +151,22 @@ func (cc *ClientController) GetClientById(w http.ResponseWriter, r *http.Request
 // @Router       /updateClient/{clientID} [put]
 func (cc *ClientController) UpdateClient(w http.ResponseWriter, r *http.Request) {
 	requestID := mux.Vars(r)["clientID"]
-	clientID, err := uuid.Parse(requestID)
-	if err != nil {
+
+	if requestID == "" {
 		common.JSONResponse(w, http.StatusBadRequest, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 400,
-				Message: "Invalid client ID",
-				Details: err.Error(),
+				Code:    400,
+				Message: "Invalid request",
 			},
 		})
 		return
 	}
 
-	var request models.UpdateClientRequest
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+	var updatedClient dto.UpdateClientRequest
+	if err := json.NewDecoder(r.Body).Decode(&updatedClient); err != nil {
 		common.JSONResponse(w, http.StatusBadRequest, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 400,
+				Code:    400,
 				Message: "Invalid request body",
 				Details: err.Error(),
 			},
@@ -177,10 +174,10 @@ func (cc *ClientController) UpdateClient(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if errors := utils.ValidateEntity(request); errors != nil {
+	if errors := utils.ValidateEntity(updatedClient); errors != nil {
 		common.JSONResponse(w, http.StatusUnprocessableEntity, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 422,
+				Code:    422,
 				Message: "Invalid data",
 				Details: errors,
 			},
@@ -188,23 +185,13 @@ func (cc *ClientController) UpdateClient(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	updatedClient := models.NewClient(
-		request.DocumentType,
-		request.Document,
-		request.Name,
-		request.Surname,
-		request.Email,
-		request.PhoneNumber,
-		request.Address,
-	)
-	updatedClient.ID = clientID
-
-	err = cc.cs.UpdateClient(clientID, *updatedClient)
+	err := cc.cs.UpdateClient(requestID, updatedClient)
 	if err != nil {
 		common.JSONResponse(w, http.StatusNotFound, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 404,
+				Code:    404,
 				Message: "CLIENT_NOT_FOUND",
+				Details: err.Error(),
 			},
 		})
 		return
@@ -212,7 +199,7 @@ func (cc *ClientController) UpdateClient(w http.ResponseWriter, r *http.Request)
 
 	common.JSONResponse(w, http.StatusOK, common.ApiResponse{
 		Message: "CLIENT_UPDATED_SUCCESSFULLY",
-		Data:    request,
+		Data:    updatedClient,
 	})
 }
 
@@ -227,24 +214,14 @@ func (cc *ClientController) UpdateClient(w http.ResponseWriter, r *http.Request)
 // @Failure      404 {object} common.ApiResponse{error=common.ErrorResponse}
 // @Router       /deleteClient/{clientID} [delete]
 func (cc *ClientController) DeleteClient(w http.ResponseWriter, r *http.Request) {
-	requestID := mux.Vars(r)["clientID"]
-	clientID, err := uuid.Parse(requestID)
-	if err != nil {
-		common.JSONResponse(w, http.StatusBadRequest, common.ApiResponse{
-			Error: &common.ErrorResponse{
-				Code: 400,
-				Message: "Invalid client ID",
-				Details: err.Error(),
-			},
-		})
-		return
-	}
+	clientID := mux.Vars(r)["clientID"]
 
-	err = cc.cs.DeleteClient(clientID)
+	err := cc.cs.DeleteClient(clientID)
+
 	if err != nil {
 		common.JSONResponse(w, http.StatusNotFound, common.ApiResponse{
 			Error: &common.ErrorResponse{
-				Code: 404,
+				Code:    404,
 				Message: "CLIENT_NOT_FOUND",
 			},
 		})

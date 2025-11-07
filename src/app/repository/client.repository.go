@@ -1,73 +1,94 @@
 package repository
 
 import (
+	"encoding/json"
 	"fmt"
+	"user-service-ucd/src/app/dto"
 	"user-service-ucd/src/app/models"
+	"user-service-ucd/src/database"
 
-	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // Se define la estructura del repositorio
 type ClientRepository struct {
-	db []models.Client
+	db     *gorm.DB
 }
 
 // Se crea una nueva instancia (Constructor)
-func NewClientRepository() *ClientRepository {
+func NewClientRepository(db *gorm.DB) *ClientRepository {
 	return &ClientRepository{
-		db: []models.Client{},
+		db:     database.DB,
 	}
 }
 
-func (cr *ClientRepository) CreateNewClient(client models.Client) error {
-	cr.db = append(cr.db, client)
+func (cr *ClientRepository) CreateNewClient(client dto.CreateClientRequest) error {
+	var personProfileData models.PersonProfile
+	clientData, _ := json.Marshal(client)
+
+	if err := json.Unmarshal(clientData, &personProfileData); err != nil {
+		return err
+	}
+
+	if err := cr.db.Create(&personProfileData).Error; err != nil {
+		return err
+	}
+
 	return nil
 }
 
 // Obtener todos los clientes transformados a GetClientRequest
-func (cr *ClientRepository) GetAllClients() ([]models.GetClientRequest, error) {
-	clients := make([]models.GetClientRequest, 0, len(cr.db))
-
-	for _, c := range cr.db {
-		clients = append(clients, models.GetClientRequest(c))
-	}
-
-	return clients, nil
+func (cr *ClientRepository) GetAllClients() ([]models.ClientDataView, error) {
+	var clients []models.ClientDataView
+	err := cr.db.Find(&clients).Error
+	return clients, err
 }
 
-func (cr *ClientRepository) GetClientById(id uuid.UUID) (models.GetClientRequest, error) {
-	for _, c := range cr.db {
-		if c.ID == id {
-			client := models.GetClientRequest(c)
-			return client, nil
-		}
+func (cr *ClientRepository) GetClientById(id string) (models.ClientDataView, error) {
+	var client models.ClientDataView
+	err := cr.db.Where("id = ?", id).Find(&client).Error
+
+	if err != nil {
+		return models.ClientDataView{}, fmt.Errorf("ERROR FETCHING CLIENT")
 	}
 
-	return models.GetClientRequest{}, nil
+	if client == (models.ClientDataView{}) {
+		return models.ClientDataView{}, fmt.Errorf("TECHNICIAN NOT FOUND")
+	}
+
+	return client, nil
 }
 
-func (cr *ClientRepository) UpdateClient(id uuid.UUID, updated models.Client) error {
-	for i, c := range cr.db {
-		if c.ID == id {
-			cr.db[i].DocumentType = updated.DocumentType
-			cr.db[i].Document     = updated.Document
-			cr.db[i].Name         = updated.Name
-			cr.db[i].Surname      = updated.Surname
-			cr.db[i].Email        = updated.Email
-			cr.db[i].PhoneNumber  = updated.PhoneNumber
-			cr.db[i].Address = updated.Address
-			return nil
-		}
+func (cr *ClientRepository) UpdateClient(id string, updated dto.UpdateClientRequest) error {
+	var clientUpdated models.UpdateClientEntity
+	clientData, _:= json.Marshal(updated)
+	if err := json.Unmarshal(clientData, &clientUpdated); err != nil{
+		return err
 	}
-	return fmt.Errorf("client not found")
+
+	result := cr.db.Model(&models.UpdateClientEntity{}).Where("id = ?", id).Updates(clientUpdated)
+	
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("CLIENT NOT FOUND")
+	}
+
+	return nil
 }
 
-func (cr *ClientRepository) DeleteClient(id uuid.UUID) error {
-	for i, c := range cr.db {
-		if c.ID == id {
-			cr.db = append(cr.db[:i], cr.db[i+1:]...)
-			return nil
-		}
+func (cr *ClientRepository) DeleteClient(id string) error {
+	result := cr.db.Model(models.PersonProfile{}).Where("id = ?", id).Delete(nil)
+
+	if result.Error != nil {
+		return fmt.Errorf("ERROR DELETING CLIENT")
 	}
-	return fmt.Errorf("client not found")
+
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("CLIENT NOT FOUND")
+	}
+
+	return nil
 }
