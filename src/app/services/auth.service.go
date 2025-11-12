@@ -34,6 +34,7 @@ func (as *AuthService) Login(loginReq dto.LoginRequest) (authResult common.AuthR
 		return common.AuthResult{}, err
 	}
 	authResult.Token = token
+	authResult.Role = userLogged.Role
 
 	return authResult, nil
 }

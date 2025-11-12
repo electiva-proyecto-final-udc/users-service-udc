@@ -13,6 +13,7 @@ func GenerateToken(userInfo dto.UserInfo) (string, error) {
 	claims := dto.CustomClaims{
 		UserData: userInfo,
 		RegisteredClaims: jwt.RegisteredClaims{
+			Subject: userInfo.ID,
 			Issuer:    "user_service_udc",
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(4 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
