@@ -61,6 +61,11 @@ func main() {
 			services.NewAuthService,
 			controllers.NewAuthController,
 
+			// Dependencias library
+			repository.NewLibraryRepository,
+			services.NewLibraryService,
+			controllers.NewLibraryController,
+
 			app.NewRouter,
 		),
 		fx.Invoke(RunServer),

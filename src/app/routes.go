@@ -18,6 +18,7 @@ func NewRouter(
 	clientController *controllers.ClientController,
 	technicianController *controllers.TechnicianController,
 	authController *controllers.AuthController,
+	libraryController *controllers.LibraryController,
 ) *Routes {
 
 	r := mux.NewRouter()
@@ -47,6 +48,9 @@ func NewRouter(
 	protected.HandleFunc("/deleteTechnician/{technicianID}", technicianController.DeleteTechnician).Methods("DELETE")
 	protected.HandleFunc("/changePassword", technicianController.ChangePassword).Methods("PATCH")
 
+	// Library
+	protected.HandleFunc("/library/document_types", libraryController.GetDocumentTypes).Methods("GET")
+	
 	// Configurar CORS globalmente
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:5173"}, // Front

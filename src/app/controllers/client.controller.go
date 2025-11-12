@@ -28,7 +28,7 @@ func NewClientController(cs *services.ClientService) *ClientController {
 // @Tags         clients
 // @Accept       json
 // @Produce      json
-// @Param        request body models.CreateClientRequest true "Datos del cliente"
+// @Param        request body dto.CreateClientRequest true "Datos del cliente"
 // @Success      201 {object} common.ApiResponse{data=models.Client}
 // @Failure      400 {object} common.ApiResponse{error=common.ErrorResponse}
 // @Failure      422 {object} common.ApiResponse{error=common.ErrorResponse}
@@ -143,7 +143,7 @@ func (cc *ClientController) GetClientById(w http.ResponseWriter, r *http.Request
 // @Accept       json
 // @Produce      json
 // @Param        clientID path string true "ID del cliente" example:"550e8400-e29b-41d4-a716-446655440000"
-// @Param        request body models.UpdateClientRequest true "Datos del cliente"
+// @Param        request body dto.UpdateClientRequest true "Datos del cliente"
 // @Success      200 {object} common.ApiResponse{data=models.Client}
 // @Failure      400 {object} common.ApiResponse{error=common.ErrorResponse}
 // @Failure      404 {object} common.ApiResponse{error=common.ErrorResponse}

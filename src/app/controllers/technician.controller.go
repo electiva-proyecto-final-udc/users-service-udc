@@ -28,8 +28,8 @@ func NewUserController(ts *services.TechnicianService) *TechnicianController {
 // @Tags         technicians
 // @Accept       json
 // @Produce      json
-// @Param        request body models.CreateTechnicianRequest true "Datos del técnico"
-// @Success      201 {object} common.ApiResponse{data=models.Technician}
+// @Param        request body dto.CreateTechnicianDTO true "Datos del técnico"
+// @Success      201 {object} common.ApiResponse{data=dto.TechnicianDTO}
 // @Failure      400 {object} common.ApiResponse{error=common.ErrorResponse}
 // @Failure      422 {object} common.ApiResponse{error=common.ErrorResponse}
 // @Failure      500 {object} common.ApiResponse{error=common.ErrorResponse}
@@ -80,7 +80,7 @@ func (tc *TechnicianController) AddNewTechnician(w http.ResponseWriter, r *http.
 // @Description  Obtiene la lista completa de técnicos
 // @Tags         technicians
 // @Produce      json
-// @Success      200 {object} common.ApiResponse{data=[]models.Technician}
+// @Success      200 {object} common.ApiResponse{data=[]dto.TechnicianDTO}
 // @Router       /technicians [get]
 func (tc *TechnicianController) GetAllTechnicians(w http.ResponseWriter, r *http.Request) {
 	technicians, _ := tc.ts.GetAllTechnicians()
@@ -96,7 +96,7 @@ func (tc *TechnicianController) GetAllTechnicians(w http.ResponseWriter, r *http
 // @Tags         technicians
 // @Produce      json
 // @Param        technicianID path string true "ID del técnico" example:"f47ac10b-58cc-4372-a567-0e02b2c3d479"
-// @Success      200 {object} common.ApiResponse{data=models.Technician}
+// @Success      200 {object} common.ApiResponse{data=dto.TechnicianDTO}
 // @Failure      404 {object} common.ApiResponse{error=common.ErrorResponse}
 // @Router       /technician/{technicianID} [get]
 func (tc *TechnicianController) GetTechnicianById(w http.ResponseWriter, r *http.Request) {
@@ -126,8 +126,8 @@ func (tc *TechnicianController) GetTechnicianById(w http.ResponseWriter, r *http
 // @Accept       json
 // @Produce      json
 // @Param        technicianID path string true "ID del técnico" example:"f47ac10b-58cc-4372-a567-0e02b2c3d479"
-// @Param        request body models.UpdateTechnicianRequest true "Datos del técnico"
-// @Success      200 {object} common.ApiResponse{data=models.Technician}
+// @Param        request body dto.UpdateTechnicianDTO true "Datos del técnico"
+// @Success      200 {object} common.ApiResponse{data=dto.TechnicianDTO}
 // @Failure      400 {object} common.ApiResponse{error=common.ErrorResponse}
 // @Failure      404 {object} common.ApiResponse{error=common.ErrorResponse}
 // @Failure      422 {object} common.ApiResponse{error=common.ErrorResponse}
@@ -210,7 +210,7 @@ func (tc *TechnicianController) DeleteTechnician(w http.ResponseWriter, r *http.
 // @Tags         technicians
 // @Accept       json
 // @Produce      json
-// @Param        request body models.ChangePasswordRequest true "Datos para cambiar contraseña"
+// @Param        request body dto.ChangePasswordDTO true "Datos para cambiar contraseña"
 // @Success      200 {object} common.ApiResponse "Ejemplo: {\"message\":\"PASSWORD_CHANGED_SUCCESSFULLY\"}"
 // @Failure      400 {object} common.ApiResponse{error=common.ErrorResponse}
 // @Failure      404 {object} common.ApiResponse{error=common.ErrorResponse}

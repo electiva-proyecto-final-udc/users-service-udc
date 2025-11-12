@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.LoginRequest"
+                            "$ref": "#/definitions/dto.LoginRequest"
                         }
                     }
                 ],
@@ -135,7 +135,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.ChangePasswordRequest"
+                            "$ref": "#/definitions/dto.ChangePasswordDTO"
                         }
                     }
                 ],
@@ -317,7 +317,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.CreateClientRequest"
+                            "$ref": "#/definitions/dto.CreateClientRequest"
                         }
                     }
                 ],
@@ -399,7 +399,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.CreateTechnicianRequest"
+                            "$ref": "#/definitions/dto.CreateTechnicianDTO"
                         }
                     }
                 ],
@@ -415,7 +415,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/models.Technician"
+                                            "$ref": "#/definitions/dto.TechnicianDTO"
                                         }
                                     }
                                 }
@@ -622,7 +622,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/models.Technician"
+                                            "$ref": "#/definitions/dto.TechnicianDTO"
                                         }
                                     }
                                 }
@@ -674,7 +674,7 @@ const docTemplate = `{
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/models.Technician"
+                                                "$ref": "#/definitions/dto.TechnicianDTO"
                                             }
                                         }
                                     }
@@ -712,7 +712,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UpdateClientRequest"
+                            "$ref": "#/definitions/dto.UpdateClientRequest"
                         }
                     }
                 ],
@@ -819,7 +819,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UpdateTechnicianRequest"
+                            "$ref": "#/definitions/dto.UpdateTechnicianDTO"
                         }
                     }
                 ],
@@ -835,7 +835,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/models.Technician"
+                                            "$ref": "#/definitions/dto.TechnicianDTO"
                                         }
                                     }
                                 }
@@ -935,12 +935,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "role": {
-                    "description": "Rol del usuario autenticado",
-                    "type": "string",
-                    "example": "TECHNICIAN"
+                    "type": "string"
                 },
                 "token": {
-                    "description": "JWT generado",
                     "type": "string",
                     "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                 }
@@ -958,65 +955,33 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ChangePasswordRequest": {
+        "dto.ChangePasswordDTO": {
             "type": "object",
+            "required": [
+                "NewPassword",
+                "UserId"
+            ],
             "properties": {
                 "NewPassword": {
                     "type": "string",
                     "example": "newSecret123"
                 },
-                "Username": {
+                "UserId": {
                     "type": "string",
                     "example": "carlos.r"
                 }
             }
         },
-        "models.Client": {
-            "type": "object",
-            "properties": {
-                "Address": {
-                    "type": "string",
-                    "example": "Calle 123 #45-67"
-                },
-                "Document": {
-                    "type": "string",
-                    "example": "1002003001"
-                },
-                "DocumentType": {
-                    "type": "string",
-                    "example": "CC"
-                },
-                "Email": {
-                    "type": "string",
-                    "example": "juan.perez@example.com"
-                },
-                "ID": {
-                    "type": "string",
-                    "example": "550e8400-e29b-41d4-a716-446655440000"
-                },
-                "Name": {
-                    "type": "string",
-                    "example": "Juan"
-                },
-                "PhoneNumber": {
-                    "type": "string",
-                    "example": "3001234567"
-                },
-                "Surname": {
-                    "type": "string",
-                    "example": "Pérez"
-                }
-            }
-        },
-        "models.CreateClientRequest": {
+        "dto.CreateClientRequest": {
             "type": "object",
             "required": [
                 "Address",
                 "Document",
-                "DocumentType",
+                "DocumentTypeId",
                 "Email",
                 "Name",
                 "PhoneNumber",
+                "RoleId",
                 "Surname"
             ],
             "properties": {
@@ -1028,7 +993,7 @@ const docTemplate = `{
                     "type": "string",
                     "example": "1002003001"
                 },
-                "DocumentType": {
+                "DocumentTypeId": {
                     "type": "string",
                     "example": "CC"
                 },
@@ -1044,75 +1009,20 @@ const docTemplate = `{
                     "type": "string",
                     "example": "3001234567"
                 },
+                "RoleId": {
+                    "type": "string",
+                    "example": "CC"
+                },
                 "Surname": {
                     "type": "string",
                     "example": "Pérez"
                 }
             }
         },
-        "models.CreateTechnicianRequest": {
-            "type": "object",
-            "required": [
-                "Address",
-                "Document",
-                "DocumentType",
-                "Email",
-                "EntryDate",
-                "IsActive",
-                "Name",
-                "Password",
-                "PhoneNumber",
-                "Surname",
-                "Username"
-            ],
-            "properties": {
-                "Address": {
-                    "type": "string",
-                    "example": "Calle 123 #45-67"
-                },
-                "Document": {
-                    "type": "string",
-                    "example": "1234567890"
-                },
-                "DocumentType": {
-                    "type": "string",
-                    "example": "CC"
-                },
-                "Email": {
-                    "type": "string",
-                    "example": "carlos.ramirez@example.com"
-                },
-                "EntryDate": {
-                    "type": "string",
-                    "example": "2025-01-01T15:04:05Z"
-                },
-                "IsActive": {
-                    "type": "boolean",
-                    "example": true
-                },
-                "Name": {
-                    "type": "string",
-                    "example": "Carlos"
-                },
-                "Password": {
-                    "type": "string",
-                    "example": "secret123"
-                },
-                "PhoneNumber": {
-                    "type": "string",
-                    "example": "3001234567"
-                },
-                "Surname": {
-                    "type": "string",
-                    "example": "Ramírez"
-                },
-                "Username": {
-                    "type": "string",
-                    "example": "carlos.r"
-                }
-            }
+        "dto.CreateTechnicianDTO": {
+            "type": "object"
         },
-        "models.LoginRequest": {
+        "dto.LoginRequest": {
             "type": "object",
             "properties": {
                 "Password": {
@@ -1125,7 +1035,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Technician": {
+        "dto.TechnicianDTO": {
             "type": "object",
             "properties": {
                 "Address": {
@@ -1178,7 +1088,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.UpdateClientRequest": {
+        "dto.UpdateClientRequest": {
             "type": "object",
             "properties": {
                 "Address": {
@@ -1189,7 +1099,7 @@ const docTemplate = `{
                     "type": "string",
                     "example": "1002003001"
                 },
-                "DocumentType": {
+                "DocumentTypeId": {
                     "type": "string",
                     "example": "CC"
                 },
@@ -1211,7 +1121,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.UpdateTechnicianRequest": {
+        "dto.UpdateTechnicianDTO": {
             "type": "object",
             "properties": {
                 "Address": {
@@ -1222,21 +1132,13 @@ const docTemplate = `{
                     "type": "string",
                     "example": "9876543210"
                 },
-                "DocumentType": {
+                "DocumentTypeId": {
                     "type": "string",
                     "example": "CC"
                 },
                 "Email": {
                     "type": "string",
                     "example": "juan.perez@example.com"
-                },
-                "EntryDate": {
-                    "type": "string",
-                    "example": "2025-02-01T10:00:00Z"
-                },
-                "IsActive": {
-                    "type": "boolean",
-                    "example": false
                 },
                 "Name": {
                     "type": "string",
@@ -1245,14 +1147,43 @@ const docTemplate = `{
                 "PhoneNumber": {
                     "type": "string",
                     "example": "3017654321"
+                }
+            }
+        },
+        "models.Client": {
+            "type": "object",
+            "properties": {
+                "Address": {
+                    "type": "string",
+                    "example": "Calle 123 #45-67"
+                },
+                "Document": {
+                    "type": "string",
+                    "example": "1002003001"
+                },
+                "DocumentType": {
+                    "type": "string",
+                    "example": "CC"
+                },
+                "Email": {
+                    "type": "string",
+                    "example": "juan.perez@example.com"
+                },
+                "ID": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "Name": {
+                    "type": "string",
+                    "example": "Juan"
+                },
+                "PhoneNumber": {
+                    "type": "string",
+                    "example": "3001234567"
                 },
                 "Surname": {
                     "type": "string",
                     "example": "Pérez"
-                },
-                "Username": {
-                    "type": "string",
-                    "example": "juan.p"
                 }
             }
         }

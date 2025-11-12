@@ -22,7 +22,7 @@ func NewAuthController(as *services.AuthService) *AuthController {
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        request  body      models.LoginRequest  true  "Credenciales de login"
+// @Param        request  body      dto.LoginRequest  true  "Credenciales de login"
 // @Success      200 {object} common.ApiResponse{data=common.AuthResult} "OK"
 // @Failure      400 {object} common.ApiResponse{error=common.ErrorResponse}
 // @Failure      401 {object} common.ApiResponse{error=common.ErrorResponse}
