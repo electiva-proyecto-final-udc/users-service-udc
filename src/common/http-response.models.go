@@ -13,5 +13,6 @@ type ErrorResponse struct {
 }
 
 type AuthResult struct {
-    Token string `json:"token" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."` // JWT generado
+    Token string `json:"token" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."`
+	Role string `json:"role"`
 }
