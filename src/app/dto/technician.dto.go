@@ -22,7 +22,7 @@ type TechnicianDTO struct {
 
 type CreateTechnicianDTO struct {
 	DocumentTypeId string          `json:"DocumentTypeId" validate:"required" example:"61898ef1-914a-4435-a122-5f26fe253b1a"`
-	RoleId         string          `json:"RoleId" validate:"required" example:"d290f1ee-6c54-4b01-90e6-d701748f0851"`
+	RoleId         string          `json:"RoleId" validate:"omitempty" example:"d290f1ee-6c54-4b01-90e6-d701748f0851"`
 	Document       string          `json:"Document" validate:"required,numeric" example:"1234567890"`
 	Name           string          `json:"Name" validate:"required" example:"Carlos"`
 	Surname        string          `json:"Surname" validate:"required" example:"Ramírez"`

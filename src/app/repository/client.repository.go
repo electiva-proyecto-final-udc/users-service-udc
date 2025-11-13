@@ -24,6 +24,13 @@ func NewClientRepository(db *gorm.DB) *ClientRepository {
 
 func (cr *ClientRepository) CreateNewClient(client dto.CreateClientRequest) error {
 	var personProfileData models.PersonProfile
+	var role models.RoleModel
+	errRole := cr.db.Where("description = ?", "CLIENT").Find(&role).Error
+
+	if errRole != nil {
+		return errRole
+	}
+	client.RoleId = role.ID
 	clientData, _ := json.Marshal(client)
 
 	if err := json.Unmarshal(clientData, &personProfileData); err != nil {

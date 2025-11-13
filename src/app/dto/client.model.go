@@ -2,7 +2,7 @@ package dto
 
 type CreateClientRequest struct {
 	DocumentTypeId string `json:"DocumentTypeId" validate:"required" example:"CC"`
-	RoleId         string `json:"RoleId" validate:"required" example:"CC"`
+	RoleId         string `json:"RoleId" validate:"omitempty" example:"CC"`
 	Document       string `json:"Document" validate:"required,numeric" example:"1002003001"`
 	Name           string `json:"Name" validate:"required" example:"Juan"`
 	Surname        string `json:"Surname" validate:"required" example:"Pérez"`

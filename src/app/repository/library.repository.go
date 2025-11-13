@@ -17,8 +17,8 @@ func NewLibraryRepository(db *gorm.DB) *LibraryRepository {
 	}
 }
 
-func (tr *LibraryRepository) GetDocumentTypes() ([]models.LibraryModel, error){
-	var documentTypes []models.LibraryModel
+func (tr *LibraryRepository) GetDocumentTypes() ([]models.DocumentTypeModel, error) {
+	var documentTypes []models.DocumentTypeModel
 	err := tr.db.Find(&documentTypes).Error
 	return documentTypes, err
 }

@@ -9,12 +9,12 @@ type LibraryService struct {
 	lr *repository.LibraryRepository
 }
 
-func NewLibraryService(lr *repository.LibraryRepository) *LibraryService{
+func NewLibraryService(lr *repository.LibraryRepository) *LibraryService {
 	return &LibraryService{
 		lr: lr,
 	}
 }
 
-func (ls *LibraryService) GetDocumentTypes() ([]models.LibraryModel, error){
+func (ls *LibraryService) GetDocumentTypes() ([]models.DocumentTypeModel, error) {
 	return ls.lr.GetDocumentTypes()
 }

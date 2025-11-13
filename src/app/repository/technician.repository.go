@@ -26,6 +26,12 @@ func NewTechnicianRepository(db *gorm.DB) *TechnicianRepository {
 func (tr *TechnicianRepository) CreateNewTechnician(technician dto.CreateTechnicianDTO) error {
 	var personProfileData models.PersonProfile
 	var userProfileData models.UserProfileEntity
+	
+	var role models.RoleModel
+	if errRole := tr.db.Where("description = ?", "TECHNICIAN").Find(&role).Error; errRole != nil {
+		return errRole
+	}
+	technician.RoleId = role.ID
 	technicianData, _ := json.Marshal(technician)
 
 	if err := json.Unmarshal(technicianData, &personProfileData); err != nil {
