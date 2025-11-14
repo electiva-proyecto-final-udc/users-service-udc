@@ -49,7 +49,7 @@ func NewRouter(
 	protected.HandleFunc("/changePassword", technicianController.ChangePassword).Methods("PATCH")
 
 	// Library
-	protected.HandleFunc("/library/document_types", libraryController.GetDocumentTypes).Methods("GET")
+	protected.HandleFunc("/library/documentTypes", libraryController.GetDocumentTypes).Methods("GET")
 	
 	// Configurar CORS globalmente
 	c := cors.New(cors.Options{
