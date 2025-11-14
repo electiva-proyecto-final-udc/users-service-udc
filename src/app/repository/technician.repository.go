@@ -23,49 +23,49 @@ func NewTechnicianRepository(db *gorm.DB) *TechnicianRepository {
 }
 
 // Crear un nuevo técnico
-func (tr *TechnicianRepository) CreateNewTechnician(technician dto.CreateTechnicianDTO) error {
+func (tr *TechnicianRepository) CreateNewTechnician(technician dto.CreateTechnicianDTO) (string, error) {
 	var personProfileData models.PersonProfile
 	var userProfileData models.UserProfileEntity
 	
 	var role models.RoleModel
 	if errRole := tr.db.Where("description = ?", "TECHNICIAN").Find(&role).Error; errRole != nil {
-		return errRole
+		return "", errRole
 	}
 	technician.RoleId = role.ID
 	technicianData, _ := json.Marshal(technician)
 
 	if err := json.Unmarshal(technicianData, &personProfileData); err != nil {
-		return err
+		return "", err
 	}
 
 	if err := json.Unmarshal(technicianData, &userProfileData); err != nil {
-		return err
+		return "", err
 	}
 
 	// INICIA LA TRANSACCIÓN
 	tx := tr.db.Begin()
 	if tx.Error != nil {
-		return tx.Error
+		return "", tx.Error
 	}
 
 	if err := tx.Create(&personProfileData).Error; err != nil {
 		tx.Rollback()
-		return err
+		return "", err
 	}
 	userProfileData.PersonProfileID = personProfileData.ID
 
 	if err := tx.Create(&userProfileData).Error; err != nil {
 		tx.Rollback()
-		return err
+		return "", err
 	}
 
 	// CIERRA LA TRANSACCIÓN (Hace rollback si falla)
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
-		return err
+		return "", err
 	}
 
-	return nil
+	return personProfileData.ID, nil
 }
 
 // Obtener todos los técnicos

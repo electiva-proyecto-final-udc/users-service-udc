@@ -23,10 +23,10 @@ func NewTechnicianService(tr *repository.TechnicianRepository, ns *NotificationS
 }
 
 // Crear nuevo técnico
-func (ts *TechnicianService) NewTechnician(technician dto.CreateTechnicianDTO, token string) error {
+func (ts *TechnicianService) NewTechnician(technician dto.CreateTechnicianDTO, token string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(technician.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return err
+		return "", err
 	}
 	
 	// Envía el correo al usuario al registrarse
@@ -40,13 +40,13 @@ func (ts *TechnicianService) NewTechnician(technician dto.CreateTechnicianDTO, t
 	}
 
 	technician.Password = string(hashedPassword)
-	response := ts.tr.CreateNewTechnician(technician)
-	if response != nil {
-		return response
+	response, errCreate := ts.tr.CreateNewTechnician(technician)
+	if errCreate != nil {
+		return "", errCreate
 	}
 
 	
-	return response
+	return response, errCreate
 }
 
 // Obtener todos los técnicos

@@ -21,24 +21,25 @@ type TechnicianDTO struct {
 }
 
 type CreateTechnicianDTO struct {
-	DocumentTypeId string          `json:"DocumentTypeId" validate:"required" example:"61898ef1-914a-4435-a122-5f26fe253b1a"`
-	RoleId         string          `json:"RoleId" validate:"omitempty" example:"d290f1ee-6c54-4b01-90e6-d701748f0851"`
-	Document       string          `json:"Document" validate:"required,numeric" example:"1234567890"`
-	Name           string          `json:"Name" validate:"required" example:"Carlos"`
-	Surname        string          `json:"Surname" validate:"required" example:"Ramírez"`
-	Email          string          `json:"Email" validate:"required,email" example:"carlos.ramirez@example.com"`
-	PhoneNumber    string          `json:"PhoneNumber" validate:"required,numeric" example:"3001234567"`
-	Username       string          `json:"Username" validate:"required" example:"carlos.r"`
-	Password       string          `json:"Password" validate:"required" example:"secret123"`
-	Address        string          `json:"Address" validate:"required" example:"Calle 123 #45-67"`
-	IsActive       bool            `json:"IsActive" validate:"required" example:"true"`
-	EntryDate      time.Time       `json:"EntryDate" validate:"required" example:"2025-01-01T15:04:05Z"`
-	Permissions    json.RawMessage `json:"Permissions" validate:"required" example:"{}"`
+	ID             string          `json:"id" validate:"omitempty"`
+	DocumentTypeId string          `json:"documentTypeId" validate:"required" example:"61898ef1-914a-4435-a122-5f26fe253b1a"`
+	RoleId         string          `json:"roleId" validate:"omitempty" example:"d290f1ee-6c54-4b01-90e6-d701748f0851"`
+	Document       string          `json:"document" validate:"required,numeric" example:"1234567890"`
+	Name           string          `json:"name" validate:"required" example:"Carlos"`
+	Surname        string          `json:"surname" validate:"required" example:"Ramírez"`
+	Email          string          `json:"email" validate:"required,email" example:"carlos.ramirez@example.com"`
+	PhoneNumber    string          `json:"phoneNumber" validate:"required,numeric" example:"3001234567"`
+	Username       string          `json:"username" validate:"required" example:"carlos.r"`
+	Password       string          `json:"password" validate:"required" example:"secret123"`
+	Address        string          `json:"address" validate:"required" example:"Calle 123 #45-67"`
+	IsActive       bool            `json:"isActive" validate:"required" example:"true"`
+	EntryDate      time.Time       `json:"entryDate" validate:"required" example:"2025-01-01T15:04:05Z"`
+	Permissions    json.RawMessage `json:"permissions" validate:"required" example:"{}"`
 }
 
 type ChangePasswordDTO struct {
-	UserId      string `json:"UserId" validate:"required" example:"carlos.r"`
-	NewPassword string `json:"NewPassword" validate:"required" example:"newSecret123"`
+	UserId      string `json:"userId" validate:"required" example:"carlos.r"`
+	NewPassword string `json:"newPassword" validate:"required" example:"newSecret123"`
 }
 
 type GetTechnicianDTO struct {
@@ -57,10 +58,10 @@ type GetTechnicianDTO struct {
 }
 
 type UpdateTechnicianDTO struct {
-	DocumentTypeId string `json:"DocumentTypeId" validate:"omitempty" example:"CC"`
-	Document       string `json:"Document" validate:"omitempty" example:"9876543210"`
-	Name           string `json:"Name" validate:"omitempty" example:"Juan"`
-	Email          string `json:"Email" validate:"omitempty" example:"juan.perez@example.com"`
-	PhoneNumber    string `json:"PhoneNumber" validate:"omitempty" example:"3017654321"`
-	Address        string `json:"Address" validate:"omitempty" example:"Carrera 45 #12-34"`
+	DocumentTypeId string `json:"documentTypeId" validate:"omitempty" example:"CC"`
+	Document       string `json:"document" validate:"omitempty" example:"9876543210"`
+	Name           string `json:"name" validate:"omitempty" example:"Juan"`
+	Email          string `json:"email" validate:"omitempty" example:"juan.perez@example.com"`
+	PhoneNumber    string `json:"phoneNumber" validate:"omitempty" example:"3017654321"`
+	Address        string `json:"address" validate:"omitempty" example:"Carrera 45 #12-34"`
 }

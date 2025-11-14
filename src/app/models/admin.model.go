@@ -1,14 +1,14 @@
 package models
 
 type Admin struct {
-	ID           string `json:"ID"`
-	DocumentType string `json:"DocumentType"`
-	Document     string `json:"Document"`
-	Name         string `json:"Name"`
-	Surname      string `json:"Surname"`
-	Email        string `json:"Email"`
-	PhoneNumber  string `json:"PhoneNumber"`
-	Username     string `json:"Username"`
-	Password     string `json:"Password"`
-	Permissions  string `json:"Permissions"`
+	ID           string `json:"id"`
+	DocumentType string `json:"documentType"`
+	Document     string `json:"document"`
+	Name         string `json:"name"`
+	Surname      string `json:"surname"`
+	Email        string `json:"email"`
+	PhoneNumber  string `json:"phoneNumber"`
+	Username     string `json:"username"`
+	Password     string `json:"password"`
+	Permissions  string `json:"permissions"`
 }

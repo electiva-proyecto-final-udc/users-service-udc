@@ -57,7 +57,8 @@ func (cc *ClientController) AddNewClient(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if err := cc.cs.NewClient(request); err != nil {
+	id, err := cc.cs.NewClient(request)
+	if  err != nil {
 		common.JSONResponse(w, http.StatusBadRequest, common.ApiResponse{
 			Error: &common.ErrorResponse{
 				Code:    400,
@@ -67,6 +68,7 @@ func (cc *ClientController) AddNewClient(w http.ResponseWriter, r *http.Request)
 		})
 		return
 	}
+	request.ID = id
 	common.JSONResponse(w, http.StatusCreated, common.ApiResponse{
 		Message: "CLIENT_CREATED_SUCCESSFULLY",
 		Data:    request,
