@@ -58,7 +58,8 @@ func (tc *TechnicianController) AddNewTechnician(w http.ResponseWriter, r *http.
 		return
 	}
 
-	err := tc.ts.NewTechnician(createTechRequest)
+	token := common.ExtractTokenFromHeader(r)
+	err := tc.ts.NewTechnician(createTechRequest, token)
 	if err != nil {
 		common.JSONResponse(w, http.StatusInternalServerError, common.ApiResponse{
 			Error: &common.ErrorResponse{

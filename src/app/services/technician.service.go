@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"user-service-ucd/src/app/dto"
 	"user-service-ucd/src/app/models"
 	"user-service-ucd/src/app/repository"
@@ -10,23 +11,42 @@ import (
 
 type TechnicianService struct {
 	tr *repository.TechnicianRepository
+	ns *NotificationService
 }
 
 // Constructor
-func NewTechnicianService(tr *repository.TechnicianRepository) *TechnicianService {
+func NewTechnicianService(tr *repository.TechnicianRepository, ns *NotificationService) *TechnicianService {
 	return &TechnicianService{
 		tr: tr,
+		ns: ns,
 	}
 }
 
 // Crear nuevo técnico
-func (ts *TechnicianService) NewTechnician(technician dto.CreateTechnicianDTO) error {
+func (ts *TechnicianService) NewTechnician(technician dto.CreateTechnicianDTO, token string) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(technician.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
+	
+	// Envía el correo al usuario al registrarse
+	msg, errSendingEmail := ts.ns.SendWelcomeEmail(technician.Email, dto.LoginRequest{
+		Username: technician.Username,
+		Password: technician.Password,
+	}, token)
+	fmt.Println(msg)
+	if errSendingEmail != nil {
+		fmt.Println(errSendingEmail)
+	}
+
 	technician.Password = string(hashedPassword)
-	return ts.tr.CreateNewTechnician(technician)
+	response := ts.tr.CreateNewTechnician(technician)
+	if response != nil {
+		return response
+	}
+
+	
+	return response
 }
 
 // Obtener todos los técnicos

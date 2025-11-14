@@ -2,7 +2,9 @@ package common
 
 import (
 	"fmt"
+	"net/http"
 	"os"
+	"strings"
 	"time"
 	"user-service-ucd/src/app/dto"
 
@@ -13,7 +15,7 @@ func GenerateToken(userInfo dto.UserInfo) (string, error) {
 	claims := dto.CustomClaims{
 		UserData: userInfo,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Subject: userInfo.ID,
+			Subject:   userInfo.ID,
 			Issuer:    "user_service_udc",
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(4 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -36,4 +38,12 @@ func VerifyJWT(tokenStr string) (jwt.MapClaims, error) {
 		return claims, nil
 	}
 	return nil, fmt.Errorf("INVALID TOKEN")
+}
+
+func ExtractTokenFromHeader(r *http.Request) string {
+	auth := r.Header.Get("Authorization")
+	if len(auth) > 7 && strings.HasPrefix(auth, "Bearer ") {
+		return auth[7:]
+	}
+	return ""
 }

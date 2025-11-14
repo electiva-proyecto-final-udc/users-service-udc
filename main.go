@@ -66,6 +66,9 @@ func main() {
 			services.NewLibraryService,
 			controllers.NewLibraryController,
 
+			// Servicios  Externos
+			services.NewNotificationService,
+			
 			app.NewRouter,
 		),
 		fx.Invoke(RunServer),
