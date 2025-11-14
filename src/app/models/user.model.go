@@ -6,21 +6,21 @@ import "encoding/json"
 
 type UserDataView struct {
 	ID                      string  `json:"id" gorm:"column:id"`
-	DocumentTypeName        string  `json:"document_type_name" gorm:"column:document_type_name"`
-	DocumentTypeDescription string  `json:"document_type_description" gorm:"column:document_type_description"`
-	DocumentCode            string  `json:"document_code" gorm:"column:document_code"`
-	DocumentNumber          string  `json:"document_number" gorm:"column:document_number"`
+	DocumentTypeName        string  `json:"documentTypeName" gorm:"column:document_type_name"`
+	DocumentTypeDescription string  `json:"documentTypeDescription" gorm:"column:document_type_description"`
+	DocumentCode            string  `json:"documentCode" gorm:"column:document_code"`
+	DocumentNumber          string  `json:"documentNumber" gorm:"column:document_number"`
 	Role                    string  `json:"role" gorm:"column:role"`
-	RoleCode                string  `json:"role_code" gorm:"column:role_code"`
+	RoleCode                string  `json:"roleCode" gorm:"column:role_code"`
 	Name                    string  `json:"name" gorm:"column:name"`
 	Surname                 string  `json:"surname" gorm:"column:surname"`
 	Username                string  `json:"username" gorm:"column:username"`
 	Email                   string  `json:"email" gorm:"column:email"`
-	PhoneNumber             string  `json:"phone_number" gorm:"column:phone_number"`
+	PhoneNumber             string  `json:"phoneNumber" gorm:"column:phone_number"`
 	Address                 string  `json:"address" gorm:"column:address"`
-	IsActive                bool    `json:"is_active" gorm:"column:isactive"`
+	IsActive                bool    `json:"isActive" gorm:"column:isactive"`
 	Permissions             *string `json:"permissions" gorm:"column:permissions"`
-	UserId                  string  `json:"user_id" gorm:"column:user_id"`
+	UserId                  string  `json:"userId" gorm:"column:user_id"`
 }
 
 type UserProfileEntity struct {

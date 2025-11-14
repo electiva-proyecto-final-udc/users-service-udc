@@ -60,7 +60,7 @@ func (cr *ClientRepository) GetClientById(id string) (models.ClientDataView, err
 	}
 
 	if client == (models.ClientDataView{}) {
-		return models.ClientDataView{}, fmt.Errorf("TECHNICIAN NOT FOUND")
+		return models.ClientDataView{}, fmt.Errorf("CLIENT NOT FOUND")
 	}
 
 	return client, nil
