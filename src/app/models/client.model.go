@@ -18,6 +18,7 @@ type ClientDataView struct {
 	Document                string `json:"document" example:"1002003001" gorm:"column:document_number"`
 	DocumentTypeName        string `json:"documentTypeName" gorm:"column:document_type_name"`
 	DocumentTypeDescription string `json:"documentTypeDescription" gorm:"column:document_type_description"`
+	DocumentCode            string `json:"documentCode" gorm:"column:document_code"`
 	Role                    string `json:"role" gorm:"column:role"`
 	Name                    string `json:"name" example:"Juan" gorm:"column:name"`
 	Surname                 string `json:"surname" example:"Pérez" gorm:"column:surname"`

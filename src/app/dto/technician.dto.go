@@ -32,9 +32,9 @@ type CreateTechnicianDTO struct {
 	Username       string          `json:"username" validate:"required" example:"carlos.r"`
 	Password       string          `json:"password" validate:"required" example:"secret123"`
 	Address        string          `json:"address" validate:"required" example:"Calle 123 #45-67"`
-	IsActive       bool            `json:"isActive" validate:"required" example:"true"`
-	EntryDate      time.Time       `json:"entryDate" validate:"required" example:"2025-01-01T15:04:05Z"`
-	Permissions    json.RawMessage `json:"permissions" validate:"required" example:"{}"`
+	IsActive       bool            `json:"isActive" validate:"omitempty" example:"true"`
+	EntryDate      time.Time       `json:"entryDate" validate:"omitempty" example:"2025-01-01T15:04:05Z"`
+	Permissions    json.RawMessage `json:"permissions" validate:"omitempty" example:"{}"`
 }
 
 type ChangePasswordDTO struct {

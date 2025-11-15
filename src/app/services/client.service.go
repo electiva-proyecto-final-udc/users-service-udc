@@ -16,7 +16,7 @@ func NewClientService(cr *repository.ClientRepository) *ClientService {
 	}
 }
 
-func (cs *ClientService) NewClient(client dto.CreateClientRequest) (string, error) {
+func (cs *ClientService) NewClient(client dto.CreateClientRequest) (error) {
 	return cs.cr.CreateNewClient(client)
 }
 
