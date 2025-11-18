@@ -66,6 +66,21 @@ func (cr *ClientRepository) GetClientById(id string) (models.ClientDataView, err
 	return client, nil
 }
 
+func (cr *ClientRepository) GetClientByDocument(id string) (models.ClientDataView, error) {
+	var client models.ClientDataView
+	err := cr.db.Where("document_number = ?", id).Find(&client).Error
+
+	if err != nil {
+		return models.ClientDataView{}, fmt.Errorf("ERROR FETCHING CLIENT")
+	}
+
+	if client == (models.ClientDataView{}) {
+		return models.ClientDataView{}, fmt.Errorf("CLIENT NOT FOUND")
+	}
+
+	return client, nil
+}
+
 func (cr *ClientRepository) UpdateClient(id string, updated dto.UpdateClientRequest) error {
 	var clientUpdated models.UpdateClientEntity
 	clientData, _:= json.Marshal(updated)

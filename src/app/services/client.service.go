@@ -28,6 +28,10 @@ func (cs *ClientService) GetClientById(id string) (models.ClientDataView, error)
 	return cs.cr.GetClientById(id)
 }
 
+func (cs *ClientService) GetClientByDocument(id string) (models.ClientDataView, error) {
+	return cs.cr.GetClientByDocument(id)
+}
+
 func (cs *ClientService) UpdateClient(id string, client dto.UpdateClientRequest) error {
 	return cs.cr.UpdateClient(id, client)
 }

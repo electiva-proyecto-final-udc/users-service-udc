@@ -21,13 +21,13 @@ import (
 
 func RunServer(lc fx.Lifecycle, routes *app.Routes) {
 	server := &http.Server{
-		Addr:    ":8080",
+		Addr:    ":8081",
 		Handler: routes.Router,
 	}
 
 	lc.Append(fx.Hook{
 		OnStart: func(_ context.Context) error {
-			log.Println("Server listening on :8080")
+			log.Println("Server listening on :8081")
 			go server.ListenAndServe()
 			return nil
 		},

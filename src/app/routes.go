@@ -11,7 +11,7 @@ import (
 )
 
 type Routes struct {
-	Router http.Handler 
+	Router http.Handler
 }
 
 func NewRouter(
@@ -36,6 +36,7 @@ func NewRouter(
 	// Rutas Cliente
 	protected.HandleFunc("/clients", clientController.GetAllClients).Methods("GET")
 	protected.HandleFunc("/clients/{clientID}", clientController.GetClientById).Methods("GET")
+	protected.HandleFunc("/clients/findByDocument/{document}", clientController.GetClientByDocument).Methods("GET")
 	protected.HandleFunc("/createClient", clientController.AddNewClient).Methods("POST")
 	protected.HandleFunc("/updateClient/{clientID}", clientController.UpdateClient).Methods("PATCH")
 	protected.HandleFunc("/deleteClient/{clientID}", clientController.DeleteClient).Methods("DELETE")
@@ -50,7 +51,7 @@ func NewRouter(
 
 	// Library
 	protected.HandleFunc("/library/documentTypes", libraryController.GetDocumentTypes).Methods("GET")
-	
+
 	// Configurar CORS globalmente
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:5173"}, // Front

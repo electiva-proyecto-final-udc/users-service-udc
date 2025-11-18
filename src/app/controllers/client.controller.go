@@ -136,6 +136,47 @@ func (cc *ClientController) GetClientById(w http.ResponseWriter, r *http.Request
 	})
 }
 
+// GetClientById obtiene un cliente por ID
+// @Summary      Obtener cliente
+// @Description  Busca un cliente por su UUID
+// @Tags         clients
+// @Produce      json
+// @Param        clientID path string true "ID del cliente" example:"550e8400-e29b-41d4-a716-446655440000"
+// @Success      200 {object} common.ApiResponse{data=models.Client}
+// @Failure      404 {object} common.ApiResponse{error=common.ErrorResponse}
+// @Failure      500 {object} common.ApiResponse{error=common.ErrorResponse}
+// @Router       /clients/{clientID} [get]
+func (cc *ClientController) GetClientByDocument(w http.ResponseWriter, r *http.Request) {
+	requestID := mux.Vars(r)["document"]
+	client, err := cc.cs.GetClientByDocument(requestID)
+
+	if err != nil {
+		common.JSONResponse(w, http.StatusInternalServerError, common.ApiResponse{
+			Error: &common.ErrorResponse{
+				Code:    500,
+				Message: "ERROR_FETCHING_CLIENT",
+				Details: err.Error(),
+			},
+		})
+		return
+	}
+
+	if (client == models.ClientDataView{}) {
+		common.JSONResponse(w, http.StatusNotFound, common.ApiResponse{
+			Error: &common.ErrorResponse{
+				Code:    404,
+				Message: "CLIENT_NOT_FOUND",
+			},
+		})
+		return
+	}
+
+	common.JSONResponse(w, http.StatusOK, common.ApiResponse{
+		Message: "CLIENT_FETCHED_SUCCESFULLY",
+		Data:    client,
+	})
+}
+
 // UpdateClient actualiza un cliente
 // @Summary      Actualizar cliente
 // @Description  Actualiza los datos de un cliente existente
