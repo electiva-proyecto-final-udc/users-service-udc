@@ -61,6 +61,7 @@ type UpdateTechnicianDTO struct {
 	DocumentTypeId string `json:"documentTypeId" validate:"omitempty" example:"CC"`
 	Document       string `json:"document" validate:"omitempty" example:"9876543210"`
 	Name           string `json:"name" validate:"omitempty" example:"Juan"`
+	Surname        string `json:"surname" validate:"omitempty" example:"Juan"`
 	Email          string `json:"email" validate:"omitempty" example:"juan.perez@example.com"`
 	PhoneNumber    string `json:"phoneNumber" validate:"omitempty" example:"3017654321"`
 	Address        string `json:"address" validate:"omitempty" example:"Carrera 45 #12-34"`
